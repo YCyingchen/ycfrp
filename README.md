@@ -65,21 +65,27 @@ go build -trimpath -ldflags "-s -w -H windowsgui" -o YCFRP.exe ./cmd/ycfrp-gui
 
 ### Docker 部署
 
-仓库根目录提供了开箱即用的 compose 文件（默认 x86/amd64，其余架构见 `deploy/pack/`）：
+按你的设备架构选择镜像与 compose 文件。
+
+| 架构 | 镜像标签 | compose 文件 |
+| --- | --- | --- |
+| x86 / amd64 | `ycyingchen/ycfrp:amd64-latest` | `docker-compose.yml`（仓库根目录） |
+| ARM64（树莓派 4/5 等） | `ycyingchen/ycfrp:arm64-latest` | `deploy/pack/docker-compose-arm64.yml` |
+| ARMv7（32 位 ARM） | `ycyingchen/ycfrp:armv7-latest` | `deploy/pack/docker-compose-armv7.yml` |
 
 ```bash
 mkdir -p /opt/ycfrp && cd /opt/ycfrp
-# 复制仓库根目录的 docker-compose.yml 到当前目录（ARM 设备改用 deploy/pack/docker-compose-arm64.yml 或 -armv7.yml）
+# 把对应架构的 compose 文件重命名为 docker-compose.yml 放到当前目录
 docker compose up -d
 docker compose logs -f
 ```
 
-完整的 `docker-compose.yml` 内容：
+**x86 / amd64** 的 `docker-compose.yml` 完整内容（ARM 版仅 `image` 标签不同）：
 
 ```yaml
 services:
   ycfrp:
-    image: ycyingchen/ycfrp:amd64-latest
+    image: ycyingchen/ycfrp:amd64-latest   # ARM64 改 arm64-latest，ARMv7 改 armv7-latest
     container_name: ycfrp
     restart: unless-stopped
     environment:
@@ -94,7 +100,18 @@ services:
     network_mode: host
 ```
 
-镜像：`ycyingchen/ycfrp`（`latest` 或 `amd64-latest` / `arm64-latest` / `armv7-latest`）。
+**直接拉取镜像（不用 compose）：**
+
+```bash
+# x86 / amd64
+docker pull ycyingchen/ycfrp:amd64-latest
+
+# ARM64
+docker pull ycyingchen/ycfrp:arm64-latest
+
+# ARMv7（32 位）
+docker pull ycyingchen/ycfrp:armv7-latest
+```
 
 > **说明**：`network_mode: host` 让新增隧道无需逐个映射端口；如需桥接网络，删除该行并在 `ports` 里补齐 38080 / 7000 / 7500 / 8080 / 8443 等端口。
 
