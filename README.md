@@ -74,7 +74,29 @@ docker compose up -d
 docker compose logs -f
 ```
 
+完整的 `docker-compose.yml` 内容：
+
+```yaml
+services:
+  ycfrp:
+    image: ycyingchen/ycfrp:amd64-latest
+    container_name: ycfrp
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      # 配置、隧道列表与日志都保存在这里，备份该目录即可完整迁移。
+      - ./data:/var/lib/ycfrp
+      # 挂载宿主机 docker.sock，让容器内的面板能自助拉取/载入镜像并重启自身容器。
+      - /var/run/docker.sock:/var/run/docker.sock
+    # frps 需要监听通信端口以及每条隧道映射的远程端口（默认 20000-60000 区间），
+    # 使用宿主机网络可省去逐一映射端口，也是 frps 服务端的推荐方式。
+    network_mode: host
+```
+
 镜像：`ycyingchen/ycfrp`（`latest` 或 `amd64-latest` / `arm64-latest` / `armv7-latest`）。
+
+> **说明**：`network_mode: host` 让新增隧道无需逐个映射端口；如需桥接网络，删除该行并在 `ports` 里补齐 38080 / 7000 / 7500 / 8080 / 8443 等端口。
 
 ### 飞牛 fnOS 部署
 
