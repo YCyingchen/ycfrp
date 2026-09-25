@@ -1,0 +1,4 @@
+# Windows 安装器构建产物（embed 所需，构建时生成，不进仓库）
+YCFRP.exe
+YCFRP-console.exe
+README-windows.txt

@@ -1,0 +1,26 @@
+[Unit]
+Description=YCFRP - FRP 双端管理面板
+Documentation=https://hub.docker.com/r/ycyingchen/ycfrp
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/ycfrp -c /var/lib/ycfrp -p 38080
+Restart=on-failure
+RestartSec=3
+
+# 面板以 root 运行以便绑定低位端口，如仅使用高位端口可改为专用账号。
+User=root
+Group=root
+
+# 数据目录需要可写，用于保存配置、隧道列表与日志。
+ReadWritePaths=/var/lib/ycfrp
+WorkingDirectory=/var/lib/ycfrp
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ycfrp
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,40 @@
+# 构建产物
+/dist/
+*.exe
+*.exe~
+*.fpk
+*.tar.gz
+*.zip
+
+# 内部缓存与临时目录
+huancun/
+_devhome/
+_build_tmp/
+_backup_nas/
+
+# 内部文档与交付记录
+_spec/
+STATUS.md
+
+# 第三方二进制工具
+tools/fnpack.exe
+
+# 工程环境总览页（非项目源码）
+index.html
+style.css
+app.js
+
+# IDE / 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+logs/
