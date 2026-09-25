@@ -65,9 +65,11 @@ go build -trimpath -ldflags "-s -w -H windowsgui" -o YCFRP.exe ./cmd/ycfrp-gui
 
 ### Docker 部署
 
+仓库根目录提供了开箱即用的 compose 文件（默认 x86/amd64，其余架构见 `deploy/pack/`）：
+
 ```bash
 mkdir -p /opt/ycfrp && cd /opt/ycfrp
-# 放入 deploy/pack/docker-compose.yml（按架构选 amd64/arm64/armv7）
+# 复制仓库根目录的 docker-compose.yml 到当前目录（ARM 设备改用 deploy/pack/docker-compose-arm64.yml 或 -armv7.yml）
 docker compose up -d
 docker compose logs -f
 ```
@@ -77,6 +79,13 @@ docker compose logs -f
 ### 飞牛 fnOS 部署
 
 下载 fpk 应用包，在飞牛应用中心「手动安装」即可，桌面图标内嵌打开面板。详见 [docs/fpk-guide.md](docs/fpk-guide.md)。
+
+## 相关链接
+
+- **GitHub 仓库**：<https://github.com/YCyingchen/ycfrp>
+- **下载页**：<https://ycfrp.yc1.cc.cd>
+- **Docker Hub**：<https://hub.docker.com/r/ycyingchen/ycfrp>
+- **frp 内核**：<https://github.com/fatedier/frp>
 
 ## 目录结构
 

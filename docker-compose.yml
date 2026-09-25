@@ -1,0 +1,39 @@
+# YCFRP s2609.031 —— FRP 双端管理面板 Docker Compose 部署文件（x86 / amd64）
+#
+# 用法：
+#   mkdir -p /opt/ycfrp && cd /opt/ycfrp
+#   把本文件放到 /opt/ycfrp/docker-compose.yml
+#   docker compose up -d
+#   浏览器访问 http://<服务器IP>:38080 （默认账号 admin / admin）
+#
+# 升级（面板「更新」页发现新版本后会给出同样的命令）：
+#   docker compose pull && docker compose up -d
+#
+# 镜像使用 amd64-latest 标签，pull 直接取到最新版本，无需手动改版本号。
+# 数据卷 ./data 会保留，升级不会丢配置与隧道。
+
+services:
+  ycfrp:
+    image: ycyingchen/ycfrp:amd64-latest
+    container_name: ycfrp
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      # 配置、隧道列表与日志都保存在这里，备份该目录即可完整迁移。
+      - ./data:/var/lib/ycfrp
+      # 挂载宿主机 docker.sock，让容器内的面板能自助拉取/载入镜像并重启自身容器。
+      - /var/run/docker.sock:/var/run/docker.sock
+    # frps 需要监听通信端口以及每条隧道映射的远程端口（默认 20000-60000 区间），
+    # 使用宿主机网络可省去逐一映射端口，也是 frps 服务端的推荐方式。
+    network_mode: host
+
+  # 如需使用桥接网络，请删除上面的 network_mode: host，并启用下面的端口映射。
+  # 注意：每新增一条隧道，都要把对应的远程端口补进 ports 列表后再重启容器。
+  #
+  #   ports:
+  #     - "38080:38080"   # 管理面板
+  #     - "7000:7000"     # frps 与 frpc 通信端口
+  #     - "7500:7500"     # frps 内核仪表盘
+  #     - "8080:8080"     # HTTP 类型隧道虚拟主机
+  #     - "8443:8443"     # HTTPS 类型隧道虚拟主机
