@@ -21,8 +21,13 @@ services:
       - TZ=Asia/Shanghai
     volumes:
       # 配置、隧道列表与日志都保存在这里，备份该目录即可完整迁移。
+      # 镜像以非 root 用户（uid 1000）运行，该目录需可被 uid 1000 写入：
+      #   mkdir -p ./data && sudo chown -R 1000:1000 ./data
       - ./data:/var/lib/ycfrp
       # 挂载宿主机 docker.sock，让容器内的面板能自助拉取/载入镜像并重启自身容器。
+      # 非 root 运行访问 docker.sock 需加入宿主机 docker 组（gid 用 getent group docker 查看）：
+      #   group_add: ["<docker-gid>"]
+      # 若不需要面板内自助更新，可直接删除下面这一行挂载。
       - /var/run/docker.sock:/var/run/docker.sock
     # frps 需要监听通信端口以及每条隧道映射的远程端口（默认 20000-60000 区间），
     # 使用宿主机网络可省去逐一映射端口，也是 frps 服务端的推荐方式。

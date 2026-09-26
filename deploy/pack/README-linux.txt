@@ -133,3 +133,26 @@ YCFRP s2609.031 —— FRP 双端管理面板（Linux 版）
   端口被占用         修改隧道远程端口，或释放占用该端口的进程后重启隧道。
 
   面板内置中文日志与故障定位功能，可在「日志」页面直接查看成因与处理建议。
+
+九、以普通用户运行（非 root）
+--------------------------------
+  面板与 frpc 客户端无需 root 权限即可运行；只有 frps 服务端绑定 7000/7500
+  低位端口时才需要额外处理。推荐做法：
+
+  1) 创建专用账号并接管数据目录
+
+       sudo useradd -r -s /usr/sbin/nologin ycfrp
+       sudo mkdir -p /var/lib/ycfrp
+       sudo chown -R ycfrp:ycfrp /var/lib/ycfrp
+
+  2) 给主程序加绑定低位端口的能力（仅当需要跑 frps 服务端时）
+
+       sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/ycfrp
+
+  3) 用 systemd 以该账号运行
+
+       ycfrp.service 里已写 User=ycfrp / Group=ycfrp，按第三节步骤启用即可。
+       （若不跑 frps、只跑 frpc 客户端，可跳过第 2 步。）
+
+  Docker 方式同理：镜像已以非 root 用户（uid 1000）运行，挂载的 ./data
+  目录需 chown 1000:1000（见 compose 文件内注释）。

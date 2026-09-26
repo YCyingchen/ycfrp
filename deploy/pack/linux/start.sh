@@ -38,9 +38,10 @@ else
     exit 1
 fi
 
-# 非 root 用户无法写入 /var/lib 与绑定低位端口，这里给出明确提示。
-if [ "$(id -u)" -ne 0 ] && [ "$DATA_DIR" = "/var/lib/ycfrp" ]; then
-    echo "当前不是 root 用户，请改用可写的数据目录，例如：" >&2
+# 普通用户运行时数据目录必须可写；frps 绑定 7000/7500 低位端口还需给主程序
+# 加能力：sudo setcap 'cap_net_bind_service=+ep' <ycfrp 路径>（仅用客户端则不需要）。
+if [ "$(id -u)" -ne 0 ] && [ "$DATA_DIR" = "/var/lib/ycfrp" ] && [ ! -w "$DATA_DIR" ]; then
+    echo "当前不是 root 用户且无法写入 $DATA_DIR，请改用可写的数据目录，例如：" >&2
     echo "  $0 -c \"\$HOME/ycfrp-data\" -p $PORT" >&2
     exit 1
 fi

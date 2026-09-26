@@ -19,10 +19,10 @@ STATUS.md
 # 第三方二进制工具
 tools/fnpack.exe
 
-# 工程环境总览页（非项目源码）
-index.html
-style.css
-app.js
+# 工程环境总览页（非项目源码，仅限仓库根目录）
+/index.html
+/style.css
+/app.js
 
 # IDE / 编辑器
 .idea/

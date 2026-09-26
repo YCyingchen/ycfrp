@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.title="YCFRP" \
 # 面板与内核依赖的系统证书及时区数据，安装后清空 apt 缓存以压缩体积。
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends ca-certificates tzdata; \
+    apt-get install -y --no-install-recommends ca-certificates tzdata libcap2-bin; \
     ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; \
     echo "Asia/Shanghai" > /etc/timezone; \
     rm -rf /var/lib/apt/lists/*
@@ -46,11 +46,22 @@ RUN --mount=type=bind,source=dist,target=/tmp/ycfrp-bins \
 # 交叉架构下不执行二进制校验：qemu 模拟运行 Go 静态产物可能出现伪失败，
 # 上面的 ELF 机器码比对已能确保装入的是对应架构的产物。
 
+# 以非 root 用户运行：创建专用账号并让其拥有数据目录；用文件能力
+# cap_net_bind_service 允许绑定 frps 的 7000/7500 低位端口（客户端无需 root）。
+RUN set -eux; \
+    groupadd -g 1000 ycfrp; \
+    useradd -u 1000 -g ycfrp -d /var/lib/ycfrp -s /usr/sbin/nologin ycfrp; \
+    mkdir -p /var/lib/ycfrp; \
+    chown -R ycfrp:ycfrp /var/lib/ycfrp; \
+    setcap 'cap_net_bind_service=+ep' /usr/local/bin/ycfrp
+
 # 配置、日志与隧道数据统一存放在数据卷中，便于容器重建后保留。
 VOLUME ["/var/lib/ycfrp"]
 
 # 38080 面板，7000 frps 通信，7500 内核仪表盘，8080/8443 虚拟主机。
 EXPOSE 38080 7000 7500 8080 8443
+
+USER ycfrp
 
 ENTRYPOINT ["/usr/local/bin/ycfrp"]
 CMD ["-c", "/var/lib/ycfrp", "-p", "38080"]

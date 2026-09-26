@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YCFRP 管理面板</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+:root{
+  --accent:#4f8cff;
+  --accent-2:#7c5cff;
+  --accent-soft:rgba(79,140,255,.20);
+  --accent-border:rgba(79,140,255,.42);
+  --nav-on-bg:var(--accent-soft);
+  --nav-on-bd:var(--accent-border);
+  --nav-on-txt:#fff;
+  --accent-grad:linear-gradient(135deg,var(--accent),var(--accent-2));
+  --accent-ring:rgba(79,140,255,.16);
+  --bg:#0b1020;
+  --bg2:#131a30;
+  --card:rgba(24,32,56,.72);
+  --line:rgba(255,255,255,.10);
+  --txt:#e8edf9;
+  --dim:#96a2c0;
+  --ok:#37d67a;
+  --warn:#ffb020;
+  --bad:#ff5c6c;
+  --radius:14px;
+  --control:rgba(8,12,24,.6);
+  --btn-bg:rgba(255,255,255,.06);
+  --btn-hover:rgba(255,255,255,.13);
+  --btn-hover-bd:rgba(255,255,255,.22);
+  --row-hover:rgba(255,255,255,.035);
+  --row-line:rgba(255,255,255,.05);
+  --tag-bg:rgba(255,255,255,.05);
+  --bar-track:rgba(255,255,255,.09);
+  --overlay:rgba(5,8,18,.66);
+  --switch-track:rgba(255,255,255,.14);
+  --logbox-bg:rgba(6,9,20,.72);
+  --shadow-card:0 10px 34px rgba(0,0,0,.28);
+  --shadow-modal:0 24px 70px rgba(0,0,0,.5);
+  --shadow-login:0 28px 70px rgba(0,0,0,.55);
+  --shadow-toast:0 12px 30px rgba(0,0,0,.4);
+  --ok-txt:#8ef0b4;--ok-bg:rgba(55,214,122,.12);--ok-bd:rgba(55,214,122,.36);
+  --warn-txt:#ffd79a;--warn-bg:rgba(255,176,32,.12);--warn-bd:rgba(255,176,32,.36);
+  --bad-txt:#ffa8b1;--bad-bg:rgba(255,92,108,.12);--bad-bd:rgba(255,92,108,.36);
+  --lv-info-txt:#8fb8ff;--lv-info-bg:rgba(79,140,255,.14);
+  --lv-warn-txt:#ffd79a;--lv-warn-bg:rgba(255,176,32,.14);
+  --lv-error-txt:#ffa8b1;--lv-error-bg:rgba(255,92,108,.16);
+  --lv-debug-txt:#9fb0d0;--lv-debug-bg:rgba(255,255,255,.07);
+  --lv-trace-txt:#8f9bb5;--lv-trace-bg:rgba(255,255,255,.05);
+  --lv-fatal-txt:#fff;--lv-fatal-bg:rgba(255,47,82,.34);
+  --log-time:#6d7b9c;--log-src:#8d9ab8;
+  --mark-bg:rgba(255,176,32,.32);--mark-txt:#ffe6b0;
+  --chart-a:#4f8cff;--chart-b:#a06eff;
+  --chart-grid:rgba(255,255,255,.07);
+  --chart-label:rgba(200,210,235,.45);
+  --chart-label2:rgba(200,210,235,.5);
+  --chart-fill-a:rgba(79,140,255,.26);
+  --chart-fill-b:rgba(160,120,255,.22);
+  --data-rx:#8fb8ff;--data-tx:#c9a6ff;
+}
+body.light{
+  --bg:#eef2fb;
+  --bg2:#ffffff;
+  --card:rgba(255,255,255,.82);
+  --line:rgba(20,32,60,.14);
+  --txt:#16203a;
+  --dim:#61708f;
+  --ok:#16a34a;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --control:rgba(255,255,255,.9);
+  --btn-bg:rgba(15,23,42,.04);
+  --btn-hover:rgba(15,23,42,.08);
+  --btn-hover-bd:rgba(15,23,42,.18);
+  --row-hover:rgba(15,23,42,.03);
+  --row-line:rgba(15,23,42,.06);
+  --tag-bg:rgba(15,23,42,.05);
+  --bar-track:rgba(15,23,42,.10);
+  --overlay:rgba(90,105,140,.30);
+  --switch-track:rgba(15,23,42,.18);
+  --logbox-bg:rgba(255,255,255,.85);
+  --shadow-card:0 10px 30px rgba(30,50,90,.10);
+  --shadow-modal:0 24px 60px rgba(30,50,90,.22);
+  --shadow-login:0 28px 60px rgba(30,50,90,.22);
+  --shadow-toast:0 12px 30px rgba(30,50,90,.18);
+  --ok-txt:#0b7a3e;--ok-bg:rgba(22,163,74,.10);--ok-bd:rgba(22,163,74,.30);
+  --warn-txt:#a15c07;--warn-bg:rgba(217,119,6,.10);--warn-bd:rgba(217,119,6,.30);
+  --bad-txt:#b91c1c;--bad-bg:rgba(220,38,38,.10);--bad-bd:rgba(220,38,38,.30);
+  --lv-info-txt:#2563eb;--lv-info-bg:rgba(37,99,235,.10);
+  --lv-warn-txt:#a15c07;--lv-warn-bg:rgba(217,119,6,.10);
+  --lv-error-txt:#b91c1c;--lv-error-bg:rgba(220,38,38,.10);
+  --lv-debug-txt:#475569;--lv-debug-bg:rgba(15,23,42,.05);
+  --lv-trace-txt:#64748b;--lv-trace-bg:rgba(15,23,42,.04);
+  --lv-fatal-txt:#fff;--lv-fatal-bg:rgba(220,38,38,.50);
+  --log-time:#8a94ad;--log-src:#7c88a6;
+  --mark-bg:rgba(217,119,6,.28);--mark-txt:#7c4a03;
+  --chart-grid:rgba(15,23,42,.08);
+  --chart-label:rgba(30,50,90,.45);
+  --chart-label2:rgba(30,50,90,.5);
+  --chart-fill-a:rgba(79,140,255,.20);
+  --chart-fill-b:rgba(160,120,255,.16);
+  --data-rx:#2563eb;--data-tx:#7c3aed;
+  --nav-on-bg:var(--accent);
+  --nav-on-bd:var(--accent);
+  --nav-on-txt:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font:14px/1.55 "Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
+  color:var(--txt);background:var(--bg);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* 多套界面视觉样式：通过 body 上的类覆盖若干 CSS 变量 */
+body.ui-crystal{--radius:18px;--card:rgba(30,42,72,.38);--line:rgba(255,255,255,.14);
+  --shadow-card:0 8px 32px rgba(0,0,0,.18)}
+body.ui-crystal.light{--card:rgba(255,255,255,.62);--line:rgba(20,40,90,.12)}
+body.ui-retro{--radius:4px;--card:rgba(20,26,44,.88);--line:rgba(255,200,120,.24);
+  --accent:#e8a23c;--accent-2:#c98a2e;--shadow-card:0 2px 8px rgba(0,0,0,.4)}
+body.ui-retro.light{--card:#fbf3e4;--line:rgba(140,100,40,.3);--accent:#b87828}
+body.ui-neon{--radius:12px;--card:rgba(10,12,26,.66);--line:rgba(0,255,200,.3);
+  --accent:#00ffc8;--accent-2:#ff4dd8;--shadow-card:0 0 22px rgba(0,255,200,.15)}
+body.ui-neon.light{--card:rgba(255,255,255,.8);--line:rgba(0,180,150,.3);--accent:#00b894}
+body.ui-minimal{--radius:8px;--card:rgba(18,24,40,.68);--line:rgba(255,255,255,.08);
+  --shadow-card:none;--btn-bg:rgba(255,255,255,.03)}
+body.ui-minimal.light{--card:rgba(255,255,255,.92);--line:rgba(20,40,90,.08);--btn-bg:rgba(15,23,42,.03)}
+body.ui-vivid{--radius:16px;--accent:#ff4d6d;--accent-2:#ffa53d;
+  --accent-soft:rgba(255,77,109,.22);--accent-border:rgba(255,77,109,.45);
+  --card:rgba(30,20,42,.66);--shadow-card:0 10px 34px rgba(120,40,80,.25)}
+body.ui-vivid.light{--accent:#e11d48;--accent-2:#ea8a00;
+  --accent-soft:rgba(225,29,72,.14);--accent-border:rgba(225,29,72,.3);
+  --card:rgba(255,255,255,.86)}
+body.ui-round{--radius:22px;--card:rgba(24,32,56,.6);--line:rgba(255,255,255,.12);
+  --shadow-card:0 14px 40px rgba(0,0,0,.3)}
+body.ui-round.light{--card:rgba(255,255,255,.9);--line:rgba(20,40,90,.1)}
+#wallpaper{position:fixed;inset:0;background-size:cover;background-position:center;
+  opacity:1;z-index:0;pointer-events:none;transition:opacity .3s}
+.wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:18px 18px 70px}
+/* 主导航布局：默认上顶横放；body.nav-left / nav-right 时转为垂直侧边栏 */
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+nav a{padding:8px 15px;border-radius:10px;color:var(--dim);text-decoration:none;
+  font-size:13.5px;border:1px solid transparent;transition:.18s;cursor:pointer;white-space:nowrap}
+nav a:hover{color:var(--txt);background:var(--btn-bg)}
+nav a.on{color:var(--nav-on-txt);background:var(--nav-on-bg);border-color:var(--nav-on-bd)}
+/* 左侧垂直导航 */
+body.nav-left .wrap{display:grid;grid-template-columns:170px 1fr;
+  grid-template-areas:"head head" "nav main";gap:0 18px;align-items:start}
+body.nav-right .wrap{display:grid;grid-template-columns:1fr 170px;
+  grid-template-areas:"head head" "main nav";gap:0 18px;align-items:start}
+body.nav-left header,body.nav-right header{grid-area:head}
+body.nav-left nav,body.nav-right nav{grid-area:nav;flex-direction:column;flex-wrap:nowrap;
+  position:sticky;top:18px;gap:4px;margin-bottom:0}
+body.nav-left nav a,body.nav-right nav a{width:100%;display:block;padding:10px 14px}
+body.nav-left #navSections,body.nav-right #navSections{grid-area:main;min-width:0}
+button,input,select,textarea{font-family:inherit;font-size:14px;color:var(--txt);outline:none}
+button{cursor:pointer;border:1px solid var(--line);background:var(--btn-bg);
+  border-radius:10px;padding:8px 14px;transition:.18s}
+button:hover{background:var(--btn-hover);border-color:var(--btn-hover-bd)}
+button.primary{background:var(--accent-grad);border-color:transparent;color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.12)}
+button.danger{background:var(--bad-bg);border-color:var(--bad-bd);color:var(--bad-txt)}
+button.sm{padding:5px 10px;font-size:13px;border-radius:8px}
+input,select,textarea{background:var(--control);border:1px solid var(--line);
+  border-radius:10px;padding:9px 12px;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-ring)}
+textarea{resize:vertical;min-height:110px;font-family:Consolas,Monaco,monospace;font-size:13px}
+label{display:block;font-size:12.5px;color:var(--dim);margin-bottom:5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;backdrop-filter:blur(14px);box-shadow:var(--shadow-card)}
+body.glass-off .card{backdrop-filter:none}
+.card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:10px}
+header{display:flex;justify-content:space-between;align-items:center;
+  padding:14px 0 18px;flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo{width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:grid;place-items:center;font-weight:800;color:#fff;font-size:17px;letter-spacing:.5px}
+.brand h1{font-size:19px;letter-spacing:.4px}
+.brand small{color:var(--dim);font-size:12px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+nav a{padding:8px 15px;border-radius:10px;color:var(--dim);text-decoration:none;
+  font-size:13.5px;border:1px solid transparent;transition:.18s;cursor:pointer}
+nav a:hover{color:var(--txt);background:var(--btn-bg)}
+nav a.on{color:var(--nav-on-txt);background:var(--nav-on-bg);border-color:var(--nav-on-bd)}
+.kpi{display:flex;flex-direction:column;gap:4px}
+.kpi .v{font-size:25px;font-weight:700;letter-spacing:.4px}
+.kpi .k{font-size:12.5px;color:var(--dim)}
+.kpi .s{font-size:12px;color:var(--dim)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;
+  font-size:12px;border:1px solid var(--line);background:var(--tag-bg)}
+.tag.ok{color:var(--ok-txt);border-color:var(--ok-bd);background:var(--ok-bg)}
+.tag.bad{color:var(--bad-txt);border-color:var(--bad-bd);background:var(--bad-bg)}
+.tag.warn{color:var(--warn-txt);border-color:var(--warn-bd);background:var(--warn-bg)}
+.tag.idle{color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;color:var(--dim);font-weight:500;font-size:12.5px;
+  padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--row-line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--row-hover)}
+.mono{font-family:Consolas,Monaco,monospace;font-size:12.5px}
+.bar{height:7px;border-radius:6px;background:var(--bar-track);overflow:hidden}
+.bar > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.bar.warn > i{background:linear-gradient(90deg,#ffb020,#ff7a45)}
+.bar.bad > i{background:linear-gradient(90deg,#ff5c6c,#ff2f52)}
+#logbox{height:430px;overflow:auto;background:var(--logbox-bg);border:1px solid var(--line);
+  border-radius:12px;padding:10px;font-family:Consolas,Monaco,monospace;font-size:12.5px}
+.ln{display:flex;gap:9px;padding:2.5px 4px;border-radius:6px;line-height:1.5}
+.ln:hover{background:var(--row-hover)}
+.ln .t{color:var(--log-time);flex:0 0 68px}
+.ln .lv{flex:0 0 44px;text-align:center;border-radius:5px;font-size:11.5px;padding:1px 0}
+.lv.info{color:var(--lv-info-txt);background:var(--lv-info-bg)}
+.lv.warn{color:var(--lv-warn-txt);background:var(--lv-warn-bg)}
+.lv.error{color:var(--lv-error-txt);background:var(--lv-error-bg)}
+.lv.debug{color:var(--lv-debug-txt);background:var(--lv-debug-bg)}
+.lv.trace{color:var(--lv-trace-txt);background:var(--lv-trace-bg)}
+.lv.fatal{color:var(--lv-fatal-txt);background:var(--lv-fatal-bg)}
+.ln .src{color:var(--log-src);flex:0 0 56px}
+.ln .msg{flex:1;word-break:break-all;white-space:pre-wrap}
+.ln mark{background:var(--mark-bg);color:var(--mark-txt);border-radius:3px;padding:0 2px}
+.overlay{position:fixed;inset:0;z-index:60;background:var(--overlay);
+  backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+.modal{width:100%;max-width:620px;max-height:88vh;overflow:auto;
+  background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+  box-shadow:var(--shadow-modal)}
+.modal h3{font-size:16px;margin-bottom:16px}
+.frow{margin-bottom:12px}
+.fgroup{display:flex;align-items:center;gap:8px;margin:14px 0 10px;
+  font-size:13px;font-weight:600;color:var(--txt)}
+.fgroup::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.fgroup::after{content:"";flex:1;height:1px;background:var(--line)}
+.frow.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hint{font-size:12px;color:var(--dim);margin-top:4px}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.switch input{display:none}
+.switch .track{width:40px;height:22px;border-radius:20px;background:var(--switch-track);
+  position:relative;transition:.2s;flex:0 0 40px}
+.switch .track::after{content:"";position:absolute;top:2.5px;left:2.5px;width:17px;height:17px;
+  border-radius:50%;background:#fff;transition:.2s}
+.switch input:checked + .track{background:var(--accent)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:16px;flex-wrap:wrap}
+.tabs button{border:none;background:none;border-radius:0;padding:9px 13px;color:var(--dim);
+  border-bottom:2px solid transparent}
+.tabs button.on{color:#fff;border-bottom-color:var(--accent);background:none}
+.toast{position:fixed;right:20px;bottom:20px;z-index:99;display:flex;flex-direction:column;gap:9px}
+.toast div{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--accent);
+  padding:11px 16px;border-radius:10px;box-shadow:var(--shadow-toast);
+  animation:slide .22s ease;max-width:340px;font-size:13.5px}
+.toast div.bad{border-left-color:var(--bad)}
+.toast div.ok{border-left-color:var(--ok)}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.empty{text-align:center;color:var(--dim);padding:34px 10px;font-size:13.5px}
+#login{position:fixed;inset:0;z-index:80;display:grid;place-items:center}
+.loginbox{width:100%;max-width:376px;background:var(--bg2);border:1px solid var(--line);
+  border-radius:18px;padding:30px 28px;box-shadow:var(--shadow-login)}
+.loginbox .logo{width:52px;height:52px;border-radius:15px;margin:0 auto 14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;
+  font-weight:800;color:#fff;font-size:19px}
+.loginbox h2{text-align:center;font-size:18px;margin-bottom:5px}
+.loginbox p{text-align:center;color:var(--dim);font-size:12.5px;margin-bottom:20px}
+.hidden{display:none !important}
+.wallgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.wallitem{position:relative;aspect-ratio:16/10;border-radius:10px;overflow:hidden;
+  border:2px solid transparent;cursor:pointer;background:var(--tag-bg)}
+.wallitem img{width:100%;height:100%;object-fit:cover}
+.wallitem.on{border-color:var(--accent)}
+.wallitem span{position:absolute;left:0;right:0;bottom:0;font-size:11px;padding:3px 6px;
+  background:linear-gradient(transparent,rgba(0,0,0,.78));text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 自定义壁纸的删除按钮：圆形图标按钮，悬停时更明显，易于点击 */
+.wallitem .wall-del{position:absolute;right:5px;top:5px;width:24px;height:24px;
+  border-radius:50%;border:none;background:rgba(0,0,0,.62);color:#fff;
+  font-size:14px;line-height:24px;padding:0;cursor:pointer;display:none}
+.wallitem:hover .wall-del{display:block}
+.wallitem .wall-del:hover{background:var(--bad);transform:scale(1.1)}
+.preset{aspect-ratio:16/10;border-radius:10px;border:2px solid transparent;cursor:pointer}
+.preset.on{border-color:var(--accent)}
+.chart{width:100%;height:176px;display:block}
+/* 设置页子标签高亮 */
+#setTabs .on{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* 导航布局切换按钮组 */
+.navlayout-toggle{display:inline-flex;gap:2px;background:var(--btn-bg);
+  border:1px solid var(--line);border-radius:9px;padding:2px}
+.navlayout-toggle button{width:26px;height:24px;padding:0;display:grid;place-items:center;
+  border:none;background:transparent;border-radius:6px;color:var(--dim)}
+.navlayout-toggle button svg{fill:currentColor}
+.navlayout-toggle button:hover{background:var(--btn-hover);color:var(--txt)}
+.navlayout-toggle button.on{background:var(--accent);color:#fff}
+@media(max-width:720px){
+  .frow.two,.frow.three{grid-template-columns:1fr}
+  .wrap{padding:12px 12px 60px}
+  .ln .src{display:none}
+  table{font-size:12.5px}
+  td,th{padding:8px 6px}
+}
+/* 手机端：整体更紧凑——字号、间距、卡片内边距都调小，导航可横向滚动 */
+@media(max-width:600px){
+  html{font-size:14px}
+  .wrap{padding:10px 10px 70px}
+  header{flex-wrap:wrap;gap:8px}
+  header h1{font-size:16px}
+  #nav{gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  #nav::-webkit-scrollbar{display:none}
+  #nav a{padding:6px 10px;font-size:12.5px;white-space:nowrap}
+  .card{padding:12px;border-radius:12px}
+  .card h3{font-size:14px}
+  .kpi .v{font-size:20px}
+  .kpi .k{font-size:11px}
+  table{font-size:11.5px}
+  td,th{padding:6px 5px}
+  button{padding:6px 10px;font-size:13px}
+  button.sm{padding:5px 8px;font-size:12px}
+  .row{flex-wrap:wrap}
+  .spread{flex-wrap:wrap;gap:8px}
+  .modal{width:94%;max-height:88vh;overflow:auto;padding:16px}
+  .chart{height:140px}
+  /* 拖拽提示在触屏上无意义，隐藏 */
+  #dashBoard .drag-handle .hint{display:none}
+  /* 手机端默认上顶横放导航：无论用户设了左/右垂直，小屏都强制回横放 */
+  body.nav-left .wrap,body.nav-right .wrap{display:block}
+  body.nav-left nav,body.nav-right nav{flex-direction:row;flex-wrap:nowrap;
+    position:static;overflow-x:auto;margin-bottom:12px}
+  body.nav-left nav a,body.nav-right nav a{width:auto;display:inline-block;padding:6px 10px}
+  /* 实例页操作按钮组：手机端占满一行、均分宽度，不再横向溢出 */
+  .inst-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .inst-actions .sm{width:100%;padding:8px 6px;font-size:12px;white-space:normal;line-height:1.25}
+  /* 实例卡片内部的操作按钮（编辑/删除/新增隧道）缩到最小 */
+  #instList .row{flex-wrap:wrap}
+  #instList button.sm{padding:4px 8px;font-size:11.5px}
+  #instList table{font-size:11px;min-width:640px}
+  #instList td,th{padding:5px 4px;white-space:nowrap}
+  /* 防止卡片内长内容把 grid 撑破屏幕 */
+  #instList .card{min-width:0;overflow:hidden}
+}
+</style>
+</head>
+<body>
+<div id="wallpaper"></div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div class="brand">
+      <div class="logo">YC</div>
+      <div>
+        <h1 id="siteName">YCFRP</h1>
+        <small id="siteDesc">FRP 双端管理面板</small>
+      </div>
+    </div>
+    <div class="row">
+      <span class="navlayout-toggle" id="navLayoutToggle" title="导航布局">
+        <button data-layout="top" title="上顶横放"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="2.4" rx="1"/><rect x="1" y="5.8" width="12" height="2.4" rx="1"/><rect x="1" y="10.6" width="12" height="2.4" rx="1"/></svg></button>
+        <button data-layout="left" title="左侧垂直"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="3.4" height="12" rx="1"/><rect x="6" y="1" width="7" height="2.4" rx="1"/><rect x="6" y="5.8" width="7" height="2.4" rx="1"/><rect x="6" y="10.6" width="7" height="2.4" rx="1"/></svg></button>
+        <button data-layout="right" title="右侧垂直"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="7" height="2.4" rx="1"/><rect x="1" y="5.8" width="7" height="2.4" rx="1"/><rect x="1" y="10.6" width="7" height="2.4" rx="1"/><rect x="9.6" y="1" width="3.4" height="12" rx="1"/></svg></button>
+      </span>
+      <span class="tag" id="verTag">版本</span>
+      <span class="tag idle" id="uptimeTag">运行中</span>
+      <button class="sm" id="btnTheme" title="切换明暗主题">主题</button>
+      <button class="sm" id="btnRestart">重启内核</button>
+      <button class="sm danger" id="btnLogout">退出</button>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <a data-page="dash" class="on">总览</a>
+    <a data-page="instances">实例</a>
+    <a data-page="traffic">流量监控</a>
+    <a data-page="logs">日志</a>
+    <a data-page="settings">设置</a>
+  </nav>
+
+  <div id="navSections">
+  <!-- 总览：卡片可拖拽排序，布局保存在浏览器本地 -->
+  <section data-view="dash">
+    <div class="spread" style="margin-bottom:10px">
+      <span class="hint">提示：按住卡片标题栏可拖动调整位置，布局自动保存</span>
+      <button class="sm hidden" id="btnResetLayout">恢复默认布局</button>
+    </div>
+    <div id="dashBoard" style="display:grid;grid-template-columns:repeat(12,1fr);gap:14px">
+      <div class="dashcard" data-card="kpi" style="grid-column:span 12;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
+        <div class="card kpi"><span class="k">服务端状态</span><span class="v" id="kServer">-</span><span class="s" id="kServerSub"></span></div>
+        <div class="card kpi"><span class="k">在线隧道</span><span class="v" id="kTunnel">-</span><span class="s" id="kTunnelSub"></span></div>
+        <div class="card kpi"><span class="k">连接客户端</span><span class="v" id="kClient">-</span><span class="s">已登录的 frpc 数量</span></div>
+        <div class="card kpi"><span class="k">今日总流量</span><span class="v" id="kTraffic">-</span><span class="s" id="kTrafficSub"></span></div>
+      </div>
+      <div class="dashcard" data-card="rate" style="grid-column:span 6">
+        <div class="card">
+          <h3 class="drag-handle"><span class="dot"></span>实时速率 <span class="hint" style="font-weight:400">⋮ 拖动</span></h3>
+          <canvas class="chart" id="chartRate"></canvas>
+          <div class="row" style="justify-content:space-between;margin-top:6px">
+            <span class="hint">下行 <b id="rxNow" style="color:var(--data-rx)">0 B/s</b></span>
+            <span class="hint">上行 <b id="txNow" style="color:var(--data-tx)">0 B/s</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="dashcard" data-card="host" style="grid-column:span 6">
+        <div class="card">
+          <h3 class="drag-handle"><span class="dot"></span>主机资源 <span class="hint" style="font-weight:400">⋮ 拖动</span></h3>
+          <div style="display:grid;gap:14px">
+            <div><div class="spread"><span class="hint">CPU 使用率</span><span class="hint mono" id="cpuTxt">-</span></div><div class="bar" style="margin-top:6px"><i id="cpuBar" style="width:0"></i></div></div>
+            <div><div class="spread"><span class="hint">内存占用</span><span class="hint mono" id="memTxt">-</span></div><div class="bar" style="margin-top:6px"><i id="memBar" style="width:0"></i></div></div>
+            <div><div class="spread"><span class="hint">磁盘占用</span><span class="hint mono" id="diskTxt">-</span></div><div class="bar" style="margin-top:6px"><i id="diskBar" style="width:0"></i></div></div>
+            <div class="hint" id="hostInfo">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="dashcard" data-card="tunnels" style="grid-column:span 12">
+        <div class="card">
+          <h3 class="drag-handle"><span class="dot"></span>隧道状态 <span class="hint" style="font-weight:400">⋮ 拖动</span></h3>
+          <div style="overflow:auto"><table><thead><tr>
+            <th>名称</th><th>类型</th><th>本地</th><th>远程</th><th>访问</th><th>状态</th><th>连接数</th><th>客户端</th><th>服务端</th><th>今日流量</th>
+          </tr></thead><tbody id="dashTunnels"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 隧道 -->
+  <!-- 实例管理：隧道/服务端/客户端统一在此管理 -->
+  <section data-view="instances" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread">
+        <div>
+          <h3 style="margin:0"><span class="dot"></span>实例管理</h3>
+          <div class="hint" style="margin-top:4px">
+            一个面板可同时托管多个服务端与客户端：每个客户端实例各连各的服务端、
+            各管各的隧道，互不影响。点击客户端卡片可直接管理它的隧道。
+          </div>
+        </div>
+        <div class="row inst-actions">
+          <button class="sm" id="btnImport">粘贴配置导入</button>
+          <button class="sm" id="btnExport">导出配置</button>
+          <button class="sm" id="btnAddServerInst">新增服务端</button>
+          <button class="sm primary" id="btnAddClientInst">新增客户端</button>
+        </div>
+      </div>
+    </div>
+    <div id="instSummary" class="hint" style="margin:-4px 0 12px 2px"></div>
+    <div id="instList"></div>
+    <div class="card hidden" id="instEmpty">
+      <div class="empty">暂无实例，点击右上角「新增服务端」或「新增客户端」开始</div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3><span class="dot"></span>已连接客户端</h3>
+      <div style="overflow:auto"><table><thead><tr>
+        <th>主机名</th><th>用户</th><th>版本</th><th>来源 IP</th><th>首次连接</th><th>状态</th>
+      </tr></thead><tbody id="clientRows"></tbody></table></div>
+      <div class="empty hidden" id="clientEmpty">当前没有客户端连接到本机服务端</div>
+    </div>
+  </section>
+
+  <!-- 流量 -->
+  <section data-view="traffic" class="hidden">
+    <div class="grid g4" style="margin-bottom:14px">
+      <div class="card kpi"><span class="k">当前下行</span><span class="v" id="tRx">-</span></div>
+      <div class="card kpi"><span class="k">当前上行</span><span class="v" id="tTx">-</span></div>
+      <div class="card kpi"><span class="k">累计接收</span><span class="v" id="tRxTotal">-</span></div>
+      <div class="card kpi"><span class="k">累计发送</span><span class="v" id="tTxTotal">-</span></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <h3><span class="dot"></span>网卡流量趋势</h3>
+      <canvas class="chart" id="chartTraffic" style="height:230px"></canvas>
+    </div>
+    <div class="card">
+      <div class="spread" style="margin-bottom:12px">
+        <h3 style="margin:0"><span class="dot"></span>网卡明细</h3>
+        <div class="row">
+          <button class="sm" id="btnResetTraffic">重置统计</button>
+        </div>
+      </div>
+      <div style="overflow:auto"><table><thead><tr>
+        <th>网卡</th><th>下行速率</th><th>上行速率</th><th>累计接收</th><th>累计发送</th><th>角色</th>
+      </tr></thead><tbody id="ifaceRows"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- 日志 -->
+  <section data-view="logs" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread">
+        <h3 style="margin:0"><span class="dot"></span>运行日志</h3>
+        <div class="row">
+          <select id="logSource" style="width:auto">
+            <option value="">全部来源</option>
+            <option value="服务端">服务端</option>
+            <option value="客户端">客户端</option>
+            <option value="内核">内核</option>
+            <option value="实例">实例</option>
+            <option value="面板">面板</option>
+            <option value="监控">监控</option>
+            <option value="通知">通知</option>
+          </select>
+          <select id="logLevel" style="width:auto">
+            <option value="trace">追踪及以上</option><option value="debug">调试及以上</option>
+            <option value="info" selected>信息及以上</option><option value="warn">警告及以上</option>
+            <option value="error">错误及以上</option>
+          </select>
+          <input id="logKeyword" placeholder="关键词 / 隧道名" style="width:190px">
+          <label class="switch"><input type="checkbox" id="logLive" checked><span class="track"></span><span>实时</span></label>
+          <button class="sm" id="btnLogExport">导出日志</button>
+          <button class="sm" id="btnLogAnalyze">问题定位</button>
+          <button class="sm" id="btnLogClear">清屏</button>
+        </div>
+      </div>
+    </div>
+    <div id="logbox"></div>
+    <div class="row" style="margin-top:8px;justify-content:space-between">
+      <span class="hint" id="logCount">0 条</span>
+      <span class="hint">日志会在「问题定位」中给出中文原因与处理建议</span>
+    </div>
+  </section>
+
+  <!-- 通知 -->
+  <!-- 设置：通知 / 界面 / 更新 / 账号 合并为一页 -->
+<section data-view="settings" class="hidden">
+  <div id="setTabs" class="row" style="gap:6px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="sm" data-set="notify">通知</button>
+    <button class="sm" data-set="ui">界面</button>
+    <button class="sm" data-set="update">更新</button>
+    <button class="sm" data-set="account">账号</button>
+  </div>
+  <div data-setpage="notify">
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>通知设置</h3>
+        <label class="switch"><input type="checkbox" id="n_enable"><span class="track"></span><span>启用通知</span></label>
+      </div>
+      <div class="frow three">
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="n_err"><span class="track"></span><span>错误告警</span></label>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="n_off"><span class="track"></span><span>上下线提醒</span></label>
+        </div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="n_traffic"><span class="track"></span><span>流量超限提醒</span></label>
+        </div>
+      </div>
+      <div class="frow two">
+        <div><label>告警关键词（逗号分隔）</label><input id="n_keywords"></div>
+        <div><label>静默时间（分钟，同一问题不重复提醒）</label><input id="n_quiet" type="number"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>QQ 机器人（OneBot v11）</h3>
+        <label class="switch"><input type="checkbox" id="q_enable"><span class="track"></span><span>启用</span></label>
+      </div>
+      <div class="frow three">
+        <div><label>协议</label><select id="q_proto">
+          <option value="onebot">onebot (http)</option><option value="https">https</option></select></div>
+        <div><label>机器人地址</label><input id="q_host" placeholder="127.0.0.1"></div>
+        <div><label>机器人端口</label><input id="q_port" type="number" placeholder="5700"></div>
+      </div>
+      <div class="frow two">
+        <div><label>访问令牌（可选）</label><input id="q_token" type="password"></div>
+        <div><label>管理员 QQ 号（私聊）</label><input id="q_admin"></div>
+      </div>
+      <div class="frow"><label>群号（多个用逗号分隔）</label><input id="q_groups" placeholder="123456,789012"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>QQ 官方机器人（QQ 开放平台）</h3>
+        <label class="switch"><input type="checkbox" id="qo_enable"><span class="track"></span><span>启用</span></label>
+      </div>
+      <div class="hint" style="margin-bottom:12px">
+        在 QQ 开放平台创建机器人后，填入 AppID 与 AppSecret。官方接口需先换取
+        access_token，群消息需填写群的 openid（不是群号）。
+      </div>
+      <div id="qoCredHint" class="hidden" style="margin-bottom:12px;padding:10px 12px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn-txt);font-size:13px"></div>
+
+      <div class="spread" style="background:var(--row-hover);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+        <div style="min-width:0">
+          <b style="font-size:13.5px">扫码绑定（推荐）</b>
+          <div class="hint" style="margin-top:3px">
+            用手机 QQ 扫码即可自动获取 AppID 与 AppSecret，无需手抄。
+          </div>
+        </div>
+        <button class="sm primary" id="btnQQBind" style="flex:0 0 auto">扫码绑定</button>
+      </div>
+      <div id="qqBindBox" class="hidden" style="margin-bottom:14px">
+        <div class="row" style="gap:18px;align-items:flex-start">
+          <div style="flex:0 0 auto;background:#fff;padding:10px;border-radius:10px">
+            <img id="qqBindQR" alt="扫码绑定二维码" style="display:block;width:200px;height:200px">
+          </div>
+          <div style="min-width:0;flex:1">
+            <div class="spread" style="margin-bottom:8px">
+              <b style="font-size:13.5px">用手机 QQ 扫码</b>
+              <span class="tag idle" id="qqBindStatus">等待扫码</span>
+            </div>
+            <div class="hint">1. 打开手机 QQ 扫左侧二维码</div>
+            <div class="hint" style="margin-top:4px">2. 在页面上选择要绑定的机器人并确认</div>
+            <div class="hint" style="margin-top:4px">3. 绑定成功后凭据会自动填入下方并开启监听</div>
+            <div class="row" style="margin-top:10px">
+              <button class="sm" id="btnQQBindCancel">取消绑定</button>
+              <span class="hint" id="qqBindTimer"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="frow two">
+        <div><label>AppID</label><input id="qo_appid" placeholder="102xxxxxx"></div>
+        <div><label>AppSecret</label><input id="qo_secret" type="password"></div>
+      </div>
+      <div class="frow two">
+        <div><label>群 openid（多个用逗号分隔）</label><input id="qo_groups" placeholder="群 openid"></div>
+        <div><label>用户 openid（单聊，可选）</label><input id="qo_user"></div>
+      </div>
+      <div class="frow two">
+        <div><label>被动消息 ID（可选）</label><input id="qo_msgid" placeholder="留空按主动消息发送"></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="qo_sandbox"><span class="track"></span><span>使用沙箱环境</span></label>
+        </div>
+      </div>
+      <div class="frow"><label>访问代理（可选）</label>
+        <input id="qo_proxy" placeholder="http://127.0.0.1:7890">
+        <div class="hint">面板连接 QQ 开放平台时使用，留空则直连</div></div>
+
+      <div style="border-top:1px solid var(--line);margin:16px 0 14px"></div>
+      <div class="spread" style="margin-bottom:12px">
+        <div>
+          <b style="font-size:14px">自动发现 openid</b>
+          <div class="hint" style="margin-top:4px">
+            群的 openid 由 QQ 按机器人分别生成，没有查询接口，只能从平台推送的事件里取。
+            开启监听后，把机器人拉进群并在群里 @ 一次，下方会自动出现该群的 openid。
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <label class="switch"><input type="checkbox" id="qo_listen"><span class="track"></span><span>开启事件监听</span></label>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:12px">
+        <span class="tag idle" id="qoConn">未连接</span>
+        <button class="sm" id="btnQQRefresh">刷新状态</button>
+        <button class="sm" id="btnQQClear">清空记录</button>
+        <span class="hint" id="qoStatusText"></span>
+      </div>
+      <div id="qoDiscovered"></div>
+      <div id="qoWarn" class="hidden" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn-txt);font-size:13px"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>企业微信群机器人</h3>
+        <label class="switch"><input type="checkbox" id="wc_enable"><span class="track"></span><span>启用</span></label>
+      </div>
+      <div class="hint" style="margin-bottom:12px">
+        在群聊「添加群机器人」后复制 Webhook 地址，取其中 <span class="mono">key=</span> 后面的部分填入。
+      </div>
+      <div class="frow"><label>机器人 Key</label><input id="wc_key" type="password" placeholder="693a91f6-xxxx-xxxx"></div>
+      <div class="frow two">
+        <div><label>@ 手机号（多个用逗号分隔）</label><input id="wc_mention" placeholder="13800000000"></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="wc_all"><span class="track"></span><span>@ 全体成员</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>钉钉群机器人</h3>
+        <label class="switch"><input type="checkbox" id="dt_enable"><span class="track"></span><span>启用</span></label>
+      </div>
+      <div class="hint" style="margin-bottom:12px">
+        粘贴机器人的 Webhook 地址；若安全设置选了「加签」，把密钥一并填入。
+      </div>
+      <div class="frow"><label>Webhook 地址</label><input id="dt_hook" placeholder="https://oapi.dingtalk.com/robot/send?access_token=..."></div>
+      <div class="frow two">
+        <div><label>加签密钥（可选）</label><input id="dt_secret" type="password" placeholder="SEC..."></div>
+        <div><label>@ 手机号（多个用逗号分隔）</label><input id="dt_mobiles"></div>
+      </div>
+      <div class="frow" style="margin-top:4px">
+        <label class="switch"><input type="checkbox" id="dt_all"><span class="track"></span><span>@ 所有人</span></label>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>飞书自定义机器人</h3>
+        <label class="switch"><input type="checkbox" id="fs_enable"><span class="track"></span><span>启用</span></label>
+      </div>
+      <div class="frow"><label>Webhook 地址</label><input id="fs_hook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..."></div>
+      <div class="frow"><label>签名校验密钥（可选）</label><input id="fs_secret" type="password"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>Server 酱 / Bark / Telegram</h3>
+        <div class="row">
+          <label class="switch"><input type="checkbox" id="sc_enable"><span class="track"></span><span>Server 酱</span></label>
+          <label class="switch"><input type="checkbox" id="bk_enable"><span class="track"></span><span>Bark</span></label>
+          <label class="switch"><input type="checkbox" id="tg_enable"><span class="track"></span><span>Telegram</span></label>
+        </div>
+      </div>
+      <div class="frow two">
+        <div><label>Server 酱 SendKey</label><input id="sc_key" type="password" placeholder="SCT..."></div>
+        <div><label>Server 酱渠道编号（可选）</label><input id="sc_channel" placeholder="留空使用默认"></div>
+      </div>
+      <div class="frow three">
+        <div><label>Bark 服务器</label><input id="bk_server" placeholder="https://api.day.app"></div>
+        <div><label>Bark 设备 Key</label><input id="bk_key" type="password"></div>
+        <div><label>Bark 分组（可选）</label><input id="bk_group"></div>
+      </div>
+      <div class="frow three">
+        <div><label>Telegram Bot Token</label><input id="tg_token" type="password" placeholder="123456:ABC..."></div>
+        <div><label>Telegram Chat ID</label><input id="tg_chat" placeholder="-1001234567890"></div>
+        <div><label>Telegram 代理（可选）</label><input id="tg_proxy" placeholder="http://127.0.0.1:7890"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:12px">
+        <h3 style="margin:0"><span class="dot"></span>Webhook / 其他通道</h3>
+        <button class="sm" id="btnAddChannel">添加通道</button>
+      </div>
+      <div id="channelList"></div>
+      <div class="empty hidden" id="channelEmpty">暂无 Webhook 通道</div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <button class="primary" id="btnSaveNotify">保存通知设置</button>
+        <button id="btnTestNotify">发送测试通知</button>
+      </div>
+      <div id="testResult" class="hint" style="margin-top:10px"></div>
+    </div>
+  
+  </div>
+  <div data-setpage="ui" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <h3><span class="dot"></span>站点信息</h3>
+      <div class="frow two">
+        <div><label>站点名称</label><input id="u_siteName"></div>
+        <div><label>主题色</label>
+          <div class="row"><input id="u_accent" type="color" style="width:56px;padding:4px;height:40px">
+          <input id="u_accentText" placeholder="#4f8cff" style="flex:1"></div></div>
+      </div>
+      <div class="frow two">
+        <div><label>页脚文案</label><input id="u_footer" placeholder="例如 由 YCFRP 提供支持"></div>
+        <div><label>主题模式</label><select id="u_theme">
+          <option value="dark">深色</option><option value="light">浅色</option></select></div>
+      </div>
+      <div class="frow two">
+        <div><label>导航布局</label><select id="u_navlayout">
+          <option value="top">上顶横放</option>
+          <option value="left">左侧垂直</option>
+          <option value="right">右侧垂直</option></select></div>
+        <div><label>界面样式</label><select id="u_uistyle">
+          <option value="default">默认</option>
+          <option value="crystal">水晶</option>
+          <option value="retro">复古</option>
+          <option value="neon">霓虹</option>
+          <option value="minimal">极简</option>
+          <option value="vivid">鲜明</option>
+          <option value="round">圆润</option></select></div>
+      </div>
+      <div class="frow"><label>自定义壁纸图片地址（可选）</label><input id="u_wallUrl" placeholder="https://... 或 /uploads/xxx.png"></div>
+      <div class="frow two">
+        <div><label>壁纸透明度</label><input id="u_opacity" type="range" min="0" max="1" step="0.05"></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="u_glass"><span class="track"></span><span>毛玻璃效果</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:12px">
+        <h3 style="margin:0"><span class="dot"></span>自定义壁纸</h3>
+        <div class="row">
+          <input type="file" id="wallFile" accept="image/*" class="hidden">
+          <button class="sm primary" id="btnUploadWall">上传图片</button>
+        </div>
+      </div>
+      <div class="hint" style="margin-bottom:10px">支持 PNG / JPG / WEBP / GIF / BMP / SVG，单张不超过 12 MB</div>
+      <div class="wallgrid" id="wallGrid"></div>
+    </div>
+    <div class="card">
+      <h3><span class="dot"></span>内置预设壁纸</h3>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px" id="presetGrid"></div>
+    </div>
+    <div class="row" style="margin-top:14px"><button class="primary" id="btnSaveUI">保存界面设置</button></div>
+  
+  </div>
+  <div data-setpage="update" class="hidden">
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>版本状态</h3>
+        <div class="row">
+          <button class="sm primary" id="btnCheckUpdate">检查更新</button>
+        </div>
+      </div>
+      <div class="grid g3" style="margin-bottom:14px">
+        <div class="kpi"><span class="k">当前版本</span><span class="v" id="upCur">-</span><span class="s" id="upCurSub"></span></div>
+        <div class="kpi"><span class="k">最新版本</span><span class="v" id="upLatest">-</span><span class="s" id="upLatestSub"></span></div>
+        <div class="kpi"><span class="k">运行平台</span><span class="v" id="upPlatform" style="font-size:17px">-</span><span class="s">更新包按此平台匹配</span></div>
+      </div>
+      <div id="upNotes" class="hint hidden"></div>
+      <div id="upAutoState" class="hint" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" id="upChangelogCard" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:12px">
+        <h3 style="margin:0"><span class="dot"></span>更新日志</h3>
+        <button class="sm" id="btnLoadChangelog">加载更新日志</button>
+      </div>
+      <div id="upChangelog" class="hint">点击右上角「加载更新日志」从更新源读取历次版本说明。</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div class="spread" style="margin-bottom:14px">
+        <h3 style="margin:0"><span class="dot"></span>自动检查更新</h3>
+        <label class="switch"><input type="checkbox" id="up_auto"><span class="track"></span><span>启用自动检查</span></label>
+      </div>
+      <div class="hint" style="margin-bottom:12px">
+        面板会在后台定时读取版本清单，发现新版本时通过已配置的通知渠道提醒你，
+        不会自动安装。同一版本只提醒一次。
+      </div>
+      <div class="frow two">
+        <div><label>检查间隔（小时，最少 0.5）</label>
+          <input id="up_interval" type="number" step="0.5" min="0.5" placeholder="6"></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" id="up_notify"><span class="track"></span><span>发现新版本时推送通知</span></label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="btnSaveAuto">保存自动检查设置</button>
+        <button id="btnCheckNow">立即检查一次</button>
+      </div>
+      <div id="upAutoResult" class="hint" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <h3><span class="dot"></span>在线更新</h3>
+      <div class="hint" style="margin-bottom:12px">
+        从更新源拉取版本清单并下载对应平台的安装包，校验架构后自动替换并重启面板。
+      </div>
+      <div class="frow two">
+        <div><label>更新源地址</label><input id="up_source" placeholder="https://ycfrp.yc1.cc.cd"></div>
+        <div><label>访问代理（可选）</label><input id="up_proxy" placeholder="http://127.0.0.1:7890"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="btnOnlineUpdate" disabled>下载并安装更新</button>
+        <button id="btnSaveUpdateSrc">保存更新源</button>
+      </div>
+      <div id="upProgress" class="hidden" style="margin-top:14px">
+        <div class="spread"><span class="hint" id="upProgressText">正在处理 ...</span></div>
+        <div class="bar" style="margin-top:6px"><i id="upProgressBar" style="width:0"></i></div>
+      </div>
+      <div id="upDockerHint" class="hidden" style="margin-top:14px">
+        <div class="hint" style="margin-bottom:8px">
+          当前为 Docker 部署，面板通过挂载的 <span class="mono">docker.sock</span> 自助更新：
+          在线拉取最新镜像，或上传 <span class="mono">docker save</span> 导出的镜像包后载入，
+          完成后自动重启容器，数据卷不受影响。
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="upUploadCard">
+      <h3><span class="dot"></span>上传安装包更新</h3>
+      <div class="hint" style="margin-bottom:12px">
+        适合无法访问外网的部署环境：先在有网络的机器下载对应平台的安装包，再在此上传。
+        支持 Linux 的 <span class="mono">.tar.gz</span> 与 Windows 的 <span class="mono">.zip</span>，
+        也可直接上传可执行文件。
+      </div>
+      <div class="row">
+        <input type="file" id="upFile" accept=".zip,.gz,.tgz,.tar.gz,.exe" class="hidden">
+        <button class="sm primary" id="btnPickPkg">选择安装包</button>
+        <span class="hint" id="upFileName">未选择文件</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="btnUploadUpdate" disabled>上传并安装</button>
+      </div>
+      <div id="upUploadProgress" class="hidden" style="margin-top:14px">
+        <div class="spread"><span class="hint" id="upUploadText">正在上传 ...</span></div>
+        <div class="bar" style="margin-top:6px"><i id="upUploadBar" style="width:0"></i></div>
+      </div>
+      <div class="hint" style="margin-top:12px">
+        提示：替换过程由内置助手完成，面板会短暂断开并在数秒后自动用新版本重启，
+        稍后刷新页面即可。原程序会备份为 <span class="mono">.bak</span>。
+      </div>
+    </div>
+
+    <div class="card hidden" id="upDockerUploadCard">
+      <h3><span class="dot"></span>本地镜像包更新（Docker）</h3>
+      <div class="hint" style="margin-bottom:12px">
+        适合无法访问外网的环境：从下载页（<span class="mono">ycfrp.yc1.cc.cd</span>）下载对应架构的
+        <span class="mono">docker 镜像包</span>，再在此上传。面板载入镜像后自动重启容器。
+      </div>
+      <div class="row">
+        <input type="file" id="upDockerFile" accept=".tar" class="hidden">
+        <button class="sm primary" id="btnPickDockerPkg">选择镜像包</button>
+        <span class="hint" id="upDockerFileName">未选择文件</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="btnUploadDockerUpdate" disabled>上传镜像并更新</button>
+      </div>
+      <div id="upDockerUploadProgress" class="hidden" style="margin-top:14px">
+        <div class="spread"><span class="hint" id="upDockerUploadText">正在上传 ...</span></div>
+        <div class="bar" style="margin-top:6px"><i id="upDockerUploadBar" style="width:0"></i></div>
+      </div>
+    </div>
+  
+  </div>
+  <div data-setpage="account" class="hidden">
+    <div class="card hidden" id="autostartCard" style="max-width:520px;margin-bottom:14px">
+      <div class="spread">
+        <div>
+          <h3 style="margin:0"><span class="dot"></span>开机自启动</h3>
+          <div class="hint" style="margin-top:4px">登录 Windows 后自动在后台运行面板，无需手动打开。</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="a_autostart"><span class="track"></span></label>
+      </div>
+      <div class="hint hidden" id="autostartErr" style="margin-top:8px;color:var(--bad-txt)"></div>
+    </div>
+    <div class="card" style="max-width:520px">
+      <h3><span class="dot"></span>账号与安全</h3>
+      <div class="frow"><label>当前密码</label><input id="a_old" type="password"></div>
+      <div class="frow"><label>新账号（留空不修改）</label><input id="a_user"></div>
+      <div class="frow"><label>新密码（留空不修改，至少 4 位）</label><input id="a_new" type="password"></div>
+      <button class="primary" id="btnSaveAccount">保存修改</button>
+      <div class="hint" style="margin-top:12px">修改账号或密码后需要重新登录。密码将以 bcrypt 加密保存。</div>
+    </div>
+    <div class="card" style="max-width:520px;margin-top:14px">
+      <h3><span class="dot"></span>面板信息</h3>
+      <div id="aboutBox" class="hint"></div>
+    </div>
+  
+  </div>
+</section>
+</div>
+</div>
+
+<div id="login" class="hidden">
+  <div class="loginbox">
+    <div class="logo">YC</div>
+    <h2 id="loginTitle">YCFRP 管理面板</h2>
+    <p>请输入账号与密码登录</p>
+    <div class="frow"><label>账号</label><input id="l_user" autocomplete="username"></div>
+    <div class="frow"><label>密码</label><input id="l_pass" type="password" autocomplete="current-password"></div>
+    <div class="frow"><label class="switch"><input type="checkbox" id="l_remember" checked><span class="track"></span><span>记住登录状态</span></label></div>
+    <button class="primary" id="btnLogin" style="width:100%;padding:11px">登 录</button>
+    <div id="loginErr" class="hint" style="color:var(--bad-txt);margin-top:10px;text-align:center"></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal"><div class="modal" id="modalBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let META=null, STATUS=null, HOST=null, SERIES=[], TUNNELS=[], CHANNELS=[];
+let logSrc=null, evtSrc=null, logBuf=[], analyzing=false;
+
+/* ---------------- 基础工具 ---------------- */
+async function api(path,opt={}){
+  const o=Object.assign({credentials:'same-origin',headers:{}},opt);
+  if(o.body&&typeof o.body!=='string'){o.headers['Content-Type']='application/json';o.body=JSON.stringify(o.body);}
+  const res=await fetch(path,o);
+  const ct=res.headers.get('content-type')||'';
+  if(!ct.includes('application/json')){
+    if(res.status===401){showLogin();throw new Error('请先登录');}
+    return res;
+  }
+  const data=await res.json();
+  if(!res.ok||data.ok===false){
+    if(res.status===401)showLogin();
+    throw new Error(data.error||('请求失败 '+res.status));
+  }
+  return data.data!==undefined?data.data:data;
+}
+function toast(msg,kind){
+  const d=document.createElement('div');
+  d.textContent=msg;
+  if(kind==='bad')d.className='bad'; else if(kind==='ok')d.className='ok';
+  $('#toast').appendChild(d);
+  setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(20px)';
+    d.style.transition='.25s';setTimeout(()=>d.remove(),260);},3200);
+}
+function bytes(n){
+  n=Number(n)||0;
+  if(n<1024)return n+' B';
+  const u=['KB','MB','GB','TB','PB'];let i=-1;
+  do{n/=1024;i++;}while(n>=1024&&i<u.length-1);
+  return n.toFixed(n<10?2:1)+' '+u[i];
+}
+function rate(n){return bytes(n)+'/s';}
+function dur(sec){
+  sec=Math.max(0,Math.floor(sec||0));
+  const d=Math.floor(sec/86400),h=Math.floor(sec%86400/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  if(d>0)return d+'天 '+h+'小时';
+  if(h>0)return h+'小时 '+m+'分';
+  if(m>0)return m+'分 '+s+'秒';
+  return s+'秒';
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function cssv(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+// 请求/响应头在界面上按「每行 K:V」编辑，这里与对象互转。
+function headersToText(h){
+  if(!h)return '';
+  return Object.keys(h).map(k=>k+': '+h[k]).join('\n');
+}
+function parseHeaders(text){
+  const out={};
+  (text||'').split('\n').forEach(line=>{
+    const i=line.indexOf(':');
+    if(i<=0)return;
+    const k=line.slice(0,i).trim();
+    if(!k)return;
+    out[k]=line.slice(i+1).trim();
+  });
+  return out;
+}
+function phaseTag(st,err){
+  const map={online:['运行中','ok'],offline:['已离线','idle'],running:['运行中','ok'],
+    'start error':['启动失败','bad'],'check failed':['检测失败','bad'],'wait start':['等待中','warn'],
+    waiting:['等待中','warn'],new:['新建','idle'],closed:['已停止','idle'],'not running':['未启动','idle']};
+  const [txt,cls]=map[st]||[st||'未知','idle'];
+  return `<span class="tag ${cls}" title="${esc(err||'')}">${esc(txt)}</span>`;
+}
+function typeTag(t){return `<span class="tag idle">${esc((t||'').toUpperCase())}</span>`;}
+
+// instTag 显示隧道归属的客户端实例名。隧道按实例区分，多实例下不看这一列
+// 就分不清同名隧道分别跑在哪个客户端上。
+function instTag(id){
+  if(!id)return '<span class="hint">未归属</span>';
+  const i=INSTANCES.find(x=>x.id===id);
+  return `<span class="tag idle">${esc(i?i.name:id)}</span>`;
+}
+
+// UPTIME_BASE 是推算出的服务端启动时刻（毫秒时间戳）。设为 0 表示尚未取得。
+let UPTIME_BASE=0;
+// tickUptime 按本地时钟刷新「已运行」时长。每秒执行，显示随秒递增。
+function tickUptime(){
+  if(!UPTIME_BASE)return;
+  const sec=Math.max(0,Math.floor((Date.now()-UPTIME_BASE)/1000));
+  $('#uptimeTag').textContent='已运行 '+dur(sec);
+}
+setInterval(tickUptime,1000);
+
+/* ---------------- 登录 ---------------- */
+async function boot(){
+  try{
+    const st=await api('/api/auth/status');
+    if(st.loggedIn){ await start(); } else { showLogin(); }
+  }catch(e){ showLogin(); }
+  try{
+    const m=await api('/api/meta');
+    META=m;
+    $('#siteName').textContent=m.ui.siteName||m.product;
+    $('#siteDesc').textContent=m.description||'';
+    $('#verTag').textContent='版本 '+m.version+' · 内核 '+m.kernelVersion;
+    $('#loginTitle').textContent=(m.ui.siteName||m.product)+' 管理面板';
+    // 建立运行时间基准，首屏就显示正确的时长。
+    if(m.startedAt){
+      const t=Date.parse(m.startedAt);
+      if(!isNaN(t))UPTIME_BASE=t;
+    }
+    applyUI(m.ui,false);
+    $('#aboutBox').innerHTML=
+      `产品：${esc(m.product)}<br>面板版本：${esc(m.version)}<br>frp 内核：${esc(m.kernelVersion)}<br>`+
+      `运行模式：${esc(m.mode)}<br>运行环境：${esc(m.goVersion)}<br>数据目录：${esc(m.ui&&m.ui.dataDir||'')}`;
+  }catch(e){}
+}
+function showLogin(){
+  $('#login').classList.remove('hidden');
+  $('#app').style.display='none';
+  stopStreams();
+}
+async function start(){
+  $('#login').classList.add('hidden');
+  $('#app').style.display='';
+  await loadAll();
+  startStreams();
+}
+$('#btnLogin').onclick=async()=>{
+  $('#loginErr').textContent='';
+  const b=$('#btnLogin');b.disabled=true;b.textContent='登录中...';
+  try{
+    await api('/api/auth/login',{method:'POST',body:{
+      username:$('#l_user').value.trim(),password:$('#l_pass').value,remember:$('#l_remember').checked}});
+    await boot();
+  }catch(e){ $('#loginErr').textContent=e.message; }
+  b.disabled=false;b.textContent='登 录';
+};
+$('#l_pass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#btnLogin').click();});
+$('#l_user').addEventListener('keydown',e=>{if(e.key==='Enter')$('#l_pass').focus();});
+$('#btnLogout').onclick=async()=>{
+  await api('/api/auth/logout',{method:'POST'}).catch(()=>{});
+  location.reload();
+};
+
+/* ---------------- 导航 ---------------- */
+$('#nav').addEventListener('click',e=>{
+  const a=e.target.closest('a[data-page]');if(!a)return;
+  $$('#nav a').forEach(x=>x.classList.toggle('on',x===a));
+  const page=a.dataset.page;
+  $$('section[data-view]').forEach(s=>s.classList.toggle('hidden',s.dataset.view!==page));
+  if(page==='logs')renderLogs();
+  if(page==='traffic')drawTraffic();
+  if(page==='dash')drawRate();
+  if(page==='instances')loadInstances();
+  // 设置页默认落在上次看过的子页（记忆在本地），进入「更新」子页时刷新检查。
+  if(page==='settings'){
+    const last=localStorage.getItem('ycfrp_settings_tab')||'notify';
+    showSettingsTab(last);
+  }
+});
+
+/* ---------------- 设置页子标签 ---------------- */
+function showSettingsTab(tab){
+  const btn=document.querySelector('#setTabs [data-set="'+tab+'"]');
+  if(!btn)tab='notify';
+  $$('#setTabs [data-set]').forEach(b=>b.classList.toggle('on',b.dataset.set===tab));
+  $$('[data-setpage]').forEach(p=>p.classList.toggle('hidden',p.dataset.setpage!==tab));
+  localStorage.setItem('ycfrp_settings_tab',tab);
+  if(tab==='update')loadUpdateInfo();
+}
+$('#setTabs').addEventListener('click',e=>{
+  const b=e.target.closest('[data-set]');if(!b)return;
+  showSettingsTab(b.dataset.set);
+});
+
+/* ---------------- 总览卡片拖拽布局 ---------------- */
+// 布局存 localStorage：顺序即卡片在网格里的排列。
+// KPI 概览条固定在最上（信息密度高、宽度占满，不适合参与拖拽），
+// 其余卡片（速率/主机/隧道等）都可以按住标题栏拖动换位。
+const DASH_LAYOUT_KEY='ycfrp_dash_layout';
+
+function initDashDrag(){
+  const board=$('#dashBoard');if(!board)return;
+  // 恢复已保存的顺序
+  try{
+    const saved=JSON.parse(localStorage.getItem(DASH_LAYOUT_KEY)||'[]');
+    if(Array.isArray(saved)&&saved.length){
+      const cards={};
+      board.querySelectorAll('.dashcard[data-card]').forEach(c=>cards[c.dataset.card]=c);
+      saved.forEach(id=>{
+        if(cards[id]){board.appendChild(cards[id]);delete cards[id];}
+      });
+      // 新版本可能新增了卡片，补到末尾
+      Object.values(cards).forEach(c=>board.appendChild(c));
+    }
+  }catch(e){}
+
+  // 判断是否在默认位置（显示/隐藏「恢复默认布局」按钮）
+  const resetBtn=$('#btnResetLayout');
+  const checkCustom=()=>{
+    if(!resetBtn)return;
+    const saved=localStorage.getItem(DASH_LAYOUT_KEY);
+    resetBtn.classList.toggle('hidden',!saved);
+  };
+  checkCustom();
+  if(resetBtn)resetBtn.onclick=()=>{
+    localStorage.removeItem(DASH_LAYOUT_KEY);
+    toast('已恢复默认布局，刷新页面生效','ok');
+    setTimeout(()=>location.reload(),600);
+  };
+
+  let dragEl=null;
+  board.querySelectorAll('.dashcard').forEach(card=>{
+    card.draggable=false;
+    const handle=card.querySelector('.drag-handle');
+    if(!handle)return;
+    // 只有按住标题栏才启用拖拽，避免影响卡片内表格的文本选择。
+    handle.addEventListener('mousedown',()=>{card.draggable=true;});
+    handle.addEventListener('touchstart',()=>{card.draggable=true;},{passive:true});
+    card.addEventListener('dragstart',e=>{
+      dragEl=card;card.style.opacity='.45';
+      e.dataTransfer.effectAllowed='move';
+      try{e.dataTransfer.setData('text/plain',card.dataset.card);}catch(_){/* IE 需要 */}
+    });
+    card.addEventListener('dragend',()=>{
+      card.style.opacity='';card.draggable=false;
+      dragEl=null;
+      // 保存当前顺序
+      const order=[...board.querySelectorAll('.dashcard[data-card]')].map(c=>c.dataset.card);
+      localStorage.setItem(DASH_LAYOUT_KEY,JSON.stringify(order));
+      checkCustom();
+      // 图表容器尺寸可能变了，重画一次。
+      if(typeof redrawActiveChart==='function')redrawActiveChart();
+    });
+    card.addEventListener('dragover',e=>{
+      e.preventDefault();
+      if(!dragEl||dragEl===card)return;
+      const rect=card.getBoundingClientRect();
+      // 网格布局：按鼠标相对中线的位置决定插到前还是后。
+      const before=(e.clientX<rect.left+rect.width/2)||(e.clientY<rect.top+rect.height/2&&Math.abs(e.clientY-rect.top)<24);
+      board.insertBefore(dragEl,before?card:card.nextSibling);
+    });
+  });
+}
+initDashDrag();
+
+/* ---------------- 数据加载 ---------------- */
+async function loadAll(){
+  // 实例要先于配置加载：服务端/客户端两页的编辑目标是默认实例。
+  await loadInstances();
+  await Promise.all([loadOverview(),loadConfig(),loadTunnels()]);
+  loadAutostart();
+}
+async function loadOverview(){
+  try{
+    const d=await api('/api/overview');
+    STATUS=d; HOST=d.host;
+    renderOverview();
+  }catch(e){toast('加载总览失败：'+e.message,'bad');}
+}
+function renderOverview(){
+  if(!STATUS)return;
+  const d=STATUS, s=d.stats||{};
+  $('#kServer').textContent=d.serverRunning?'运行中':'已停止';
+  $('#kServer').style.color=d.serverRunning?'var(--ok)':'var(--bad)';
+  const si=d.server||{};
+  $('#kServerSub').textContent=d.serverRunning
+    ? `绑定端口 ${si.bindPort||'--'} · 连接 ${si.curConns||0}`
+    : '服务端未启动';
+  $('#kTunnel').textContent=(s.tunnelOnline||0)+' / '+(s.tunnelTotal||0);
+  $('#kTunnelSub').textContent=s.tunnelError?`${s.tunnelError} 条异常`:'全部正常';
+  $('#kClient').textContent=s.clientCount||0;
+  const tin=si.totalTrafficIn||0,tout=si.totalTrafficOut||0;
+  $('#kTraffic').textContent=bytes(tin+tout);
+  $('#kTrafficSub').textContent=`下行 ${bytes(tin)} · 上行 ${bytes(tout)}`;
+  // 优先用 meta 里的精确启动时刻作为基准；overview 的 uptime 是整秒，
+  // 只能作为拿不到 startedAt 时的退路，否则会出现几秒的跳变。
+  if(!UPTIME_BASE){
+    if(META&&META.startedAt){
+      const t=Date.parse(META.startedAt);
+      if(!isNaN(t))UPTIME_BASE=t;
+    }
+    if(!UPTIME_BASE){
+      const up=d.uptime||0;
+      if(up>0)UPTIME_BASE=Date.now()-up*1000;
+    }
+  }
+  tickUptime();
+  $('#rxNow').textContent=rate(HOST?HOST.rxRate:0);
+  $('#txNow').textContent=rate(HOST?HOST.txRate:0);
+  renderHost();
+  renderDashTunnels();
+  renderClients();
+  drawRate();
+}
+function renderHost(){
+  if(!HOST)return;
+  const set=(bar,txt,v,pct)=>{
+    $(bar).style.width=Math.min(100,pct||0)+'%';
+    $(bar).className=(pct>90?'bad':pct>70?'warn':'');
+    $(txt).textContent=(v||'-')+(pct!=null?` · ${pct.toFixed(1)}%`:'');
+  };
+  set('#cpuBar','#cpuTxt',(HOST.cpuPercent||0).toFixed(1)+' %',HOST.cpuPercent);
+  set('#memBar','#memTxt',bytes(HOST.memUsed)+' / '+bytes(HOST.memTotal),HOST.memPercent);
+  set('#diskBar','#diskTxt',bytes(HOST.diskUsed)+' / '+bytes(HOST.diskTotal),HOST.diskPercent);
+  $('#hostInfo').textContent=`主机 ${HOST.hostname||'-'} · 系统 ${HOST.platform||'-'} · 架构 ${HOST.arch||'-'} · 已开机 ${dur(HOST.uptime)}`;
+  $('#tRx').textContent=rate(HOST.rxRate);
+  $('#tTx').textContent=rate(HOST.txRate);
+  $('#tRxTotal').textContent=bytes(HOST.totalRx);
+  $('#tTxTotal').textContent=bytes(HOST.totalTx);
+  renderIfaces();
+}
+function renderIfaces(){
+  const rows=HOST&&HOST.interfaces||[];
+  $('#ifaceRows').innerHTML=rows.map(i=>`<tr>
+    <td class="mono">${esc(i.name)}</td>
+    <td class="mono" style="color:var(--data-rx)">${rate(i.rxRate)}</td>
+    <td class="mono" style="color:var(--data-tx)">${rate(i.txRate)}</td>
+    <td class="mono">${bytes(i.rxTotal)}</td>
+    <td class="mono">${bytes(i.txTotal)}</td>
+    <td>${i.isDefault?'<span class="tag ok">主用</span>':'<span class="tag idle">备用</span>'}</td>
+  </tr>`).join('')||'<tr><td colspan="6" class="empty">未采集到网卡数据</td></tr>';
+}
+function renderDashTunnels(){
+  const rows=(STATUS&&STATUS.tunnels)||[];
+  $('#dashTunnels').innerHTML=rows.slice(0,12).map(t=>{
+    const acc=tunnelAccessURL(t);
+    const accCell=acc
+      ? `<a href="${esc(acc)}" target="_blank" rel="noopener" style="text-decoration:none;padding:4px 10px;font-size:12px;border-radius:8px;background:var(--accent);color:#fff;display:inline-block">访问</a>`
+      : '<span class="tag idle">—</span>';
+    return `<tr>
+    <td>${esc(t.name)}</td><td>${typeTag(t.type)}</td>
+    <td class="mono">${t.localPort?`${esc(t.localIP||'127.0.0.1')}:${t.localPort}`:'--'}</td>
+    <td class="mono">${esc(remoteOf(t)||'-')}</td>
+    <td>${accCell}</td>
+    <td>${phaseTag(t.status,t.err)}</td>
+    <td class="mono">${t.curConns||0}</td>
+    <td>${esc(tunnelClientName(t))}</td>
+    <td class="mono">${esc(tunnelServerAddr(t))}</td>
+    <td class="mono">${bytes(t.todayIn)} / ${bytes(t.todayOut)}</td>
+  </tr>`;}).join('')||'<tr><td colspan="10" class="empty">暂无隧道</td></tr>';
+}
+function remoteOf(t){
+  if(t.type==='http'||t.type==='https'||t.type==='tcpmux')
+    return (t.customDomains&&t.customDomains[0])||t.subdomain||'';
+  return t.remoteAddr||(t.remotePort?(':'+t.remotePort):'');
+}
+function renderClients(){
+  const rows=(STATUS&&STATUS.clients)||[];
+  $('#clientRows').innerHTML=rows.map(c=>`<tr>
+    <td>${esc(c.hostname||'-')}</td><td>${esc(c.user||'-')}</td>
+    <td class="mono">${esc(c.version||'-')}</td><td class="mono">${esc(c.ip||'-')}</td>
+    <td class="mono">${esc(c.firstConnectedAt||'-')}</td>
+    <td>${c.online?'<span class="tag ok">在线</span>':'<span class="tag idle">离线</span>'}</td>
+  </tr>`).join('');
+  $('#clientEmpty').classList.toggle('hidden',rows.length>0);
+}
+async function loadTunnels(){
+  try{
+    const d=await api('/api/tunnels');
+    TUNNELS=d.tunnels||[];
+    renderInstances();
+  }catch(e){toast('加载隧道失败：'+e.message,'bad');}
+}
+
+/* ---------------- 配置 ---------------- */
+async function loadConfig(){
+  try{
+    const c=await api('/api/config');
+
+    fill('#n_enable',c.notify.enable);fill('#n_err',c.notify.monitorErrors);
+    fill('#n_off',c.notify.monitorOffline);fill('#n_traffic',c.notify.monitorTraffic);
+    fill('#n_keywords',(c.notify.keywords||[]).join(','));
+    fill('#n_quiet',c.notify.quietMinutes);
+    fill('#q_enable',c.notify.qq.enable);fill('#q_proto',c.notify.qq.protocol);
+    fill('#q_host',c.notify.qq.host);fill('#q_port',c.notify.qq.port);
+    // 密钥类字段不回显明文：已配置时显示占位状态，留空提交即保持原值。
+    fill('#q_admin',c.notify.qq.adminAdmin||c.notify.qq.adminQQ);
+    fill('#q_groups',(c.notify.qq.groupIds||[]).join(','));
+    markSecret('#q_token', c.notify.qq&&c.notify.qq.hasAccessToken);
+
+    const qo=c.notify.qqOfficial||{};
+    fill('#qo_enable',qo.enable);fill('#qo_appid',qo.appId);
+    fill('#qo_groups',qo.groupOpenIds);fill('#qo_user',qo.userOpenId);
+    fill('#qo_msgid',qo.msgId);fill('#qo_sandbox',qo.sandbox);
+    fill('#qo_proxy',qo.proxy);fill('#qo_listen',qo.listen);
+    markSecret('#qo_secret', qo.hasAppSecret);
+
+    const wc=c.notify.wecom||{};
+    fill('#wc_enable',wc.enable);
+    fill('#wc_mention',wc.mentionList);fill('#wc_all',wc.mentionAll);
+    markSecret('#wc_key', wc.hasKey);
+
+    const dt=c.notify.dingtalk||{};
+    fill('#dt_enable',dt.enable);fill('#dt_hook',dt.webhook);
+    fill('#dt_mobiles',dt.atMobiles);fill('#dt_all',dt.atAll);
+    markSecret('#dt_secret', dt.hasSecret);
+
+    const fs=c.notify.feishu||{};
+    fill('#fs_enable',fs.enable);fill('#fs_hook',fs.webhook);
+    markSecret('#fs_secret', fs.hasSecret);
+
+    const sc=c.notify.serverChan||{};
+    fill('#sc_enable',sc.enable);fill('#sc_channel',sc.channel);
+    markSecret('#sc_key', sc.hasSendKey);
+
+    const bk=c.notify.bark||{};
+    fill('#bk_enable',bk.enable);fill('#bk_server',bk.server);fill('#bk_group',bk.group);
+    markSecret('#bk_key', bk.hasDeviceKey);
+
+    const tg=c.notify.telegram||{};
+    fill('#tg_enable',tg.enable);fill('#tg_chat',tg.chatId);fill('#tg_proxy',tg.proxy);
+    markSecret('#tg_token', tg.hasBotToken);
+
+    qqOfficialHint();
+    loadQQBotStatus();
+    qqBindRestore();
+    CHANNELS=c.notify.channels||[];
+    renderChannels();
+
+    fill('#u_siteName',c.ui.siteName);fill('#u_accent',c.ui.accentColor);
+    fill('#u_accentText',c.ui.accentColor);fill('#u_footer',c.ui.siteFooter);
+    fill('#u_theme',c.ui.theme);fill('#u_wallUrl',c.ui.wallpaperUrl);
+    fill('#u_opacity',c.ui.wallpaperOpacity);fill('#u_glass',c.ui.glassEffect);
+    fill('#u_navlayout',c.ui.navLayout||'top');fill('#u_uistyle',c.ui.uiStyle||'default');
+    applyUI(c.ui,true);
+    loadWallpapers();
+  }catch(e){toast('加载配置失败：'+e.message,'bad');}
+}
+function fill(sel,v){
+  const el=$(sel);if(!el)return;
+  if(el.type==='checkbox')el.checked=!!v; else el.value=v==null?'':v;
+}
+// markSecret 处理密钥输入框的「已配置」状态。
+//
+// 密钥不回显明文，因此输入框留空。为让用户知道已经配好了，用 placeholder
+// 提示；提交时留空表示保持原值（后端 setSecret 也只接受非空值）。
+function markSecret(sel,configured){
+  const el=$(sel);if(!el)return;
+  if(configured){
+    el.value='';
+    el.placeholder='已配置（留空保持不变）';
+  }else{
+    el.value='';
+    el.placeholder=el.dataset.ph||'';
+  }
+}
+function num(sel){const v=$(sel).value.trim();return v===''?undefined:Number(v);}
+function str(sel){return $(sel).value;}
+
+async function pingTo(host,port){
+  toast(`正在测试 ${host}:${port} ...`);
+  try{
+    const r=await api(`/api/tools/ping?host=${encodeURIComponent(host)}&port=${port}`);
+    toast(r.ok?`连接成功，耗时 ${r.costMs} 毫秒`:'连接失败：'+r.error,r.ok?'ok':'bad');
+  }catch(e){toast(e.message,'bad');}
+}
+$('#btnRestart').onclick=async()=>{
+  if(!confirm('确定重启 frp 内核吗？现有隧道会短暂断开。'))return;
+  try{ await api('/api/kernel',{method:'POST',body:{action:'restart'}});
+    toast('内核已重启','ok'); await loadOverview();
+  }catch(e){toast(e.message,'bad');}
+};
+$('#btnResetTraffic').onclick=async()=>{
+  if(!confirm('确定重置流量统计吗？'))return;
+  try{ await api('/api/kernel',{method:'POST',body:{action:'reset-traffic'}});
+    toast('流量统计已重置','ok');
+  }catch(e){toast(e.message,'bad');}
+};
+
+/* ---------------- 隧道弹窗 ---------------- */
+function modal(title,html){
+  $('#modalBody').innerHTML=`<h3>${esc(title)}</h3>${html}`;
+  $('#modal').classList.remove('hidden');
+}
+function closeModal(){$('#modal').classList.add('hidden');}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+
+const TYPES=[['tcp','TCP 端口转发'],['udp','UDP 端口转发'],['http','HTTP 域名转发'],
+  ['https','HTTPS 域名转发'],['tcpmux','TCPMux'],['stcp','STCP 加密隧道'],
+  ['xtcp','XTCP 点对点'],['sudp','SUDP']];
+
+// instOptions 渲染客户端实例下拉框。没有客户端实例时给出明确指引，
+// 否则用户会卡在「创建隧道却不知道为何失败」。
+function instOptions(selected){
+  const clients=INSTANCES.filter(i=>i.kind==='client');
+  if(!clients.length)return '<option value="">（请先创建客户端实例）</option>';
+  return clients.map(i=>{
+    const label=`${i.name}（连 ${(i.client||{}).serverAddr||'--'}:${(i.client||{}).serverPort||'--'}）`;
+    const on=selected?i.id===selected:false;
+    return `<option value="${esc(i.id)}" ${on?'selected':''}>${esc(label)}</option>`;
+  }).join('');
+}
+// clientInstance 按标识取出客户端实例，找不到返回 undefined。
+function clientInstance(id){
+  return INSTANCES.find(i=>i.kind==='client'&&i.id===id);
+}
+// clientServerLabel 根据客户端实例拼接「客户端名 → 服务端地址」的说明文字。
+function clientServerLabel(instId){
+  const ci=clientInstance(instId);
+  if(!ci)return '（请先选择所属客户端实例）';
+  const c=ci.client||{};
+  return `${ci.name} → ${c.serverAddr||'--'}:${c.serverPort||'--'}`;
+}
+// tunnelClientName / tunnelServerAddr 供隧道列表展示「客户端 / 服务端」两列。
+function tunnelClientName(t){
+  const ci=clientInstance(t.instanceId);
+  return ci?ci.name:'--';
+}
+function tunnelServerAddr(t){
+  const ci=clientInstance(t.instanceId);
+  if(!ci)return '--';
+  const c=ci.client||{};
+  return `${c.serverAddr||'--'}:${c.serverPort||'--'}`;
+}
+// tunnelAccessURL 拼出隧道对外可访问的地址：HTTP/HTTPS 用域名，端口型用「公网IP:远程端口」。
+// 公网地址取自承载客户端实例填写的服务端地址（frpc 连的就是 frps 的公网地址）。
+function tunnelAccessURL(t){
+  if(!t)return '';
+  if(t.type==='http'||t.type==='https'){
+    const d=(t.customDomains&&t.customDomains[0])||t.subdomain||'';
+    if(d)return (t.type==='https'?'https://':'http://')+d;
+    return '';
+  }
+  const ci=clientInstance(t.instanceId);
+  const host=(ci&&ci.client&&ci.client.serverAddr)||'';
+  const port=t.remotePort||'';
+  if(!host||!port)return '';
+  return 'http://'+host+':'+port;
+}
+
+function tunnelModal(t){
+  // 新增隧道时调用方只传 {instanceId:xxx}，没有 id；编辑时才带完整隧道对象。
+  // 因此 isEdit 必须以「是否有 id」为准，不能用 !!t（新增的 {instanceId} 也是真值）。
+  const isEdit=!!(t&&t.id);
+  t=t||{type:'tcp',localIP:'127.0.0.1',enabled:true,healthCheckInterval:10,healthCheckTimeout:3,healthCheckMaxFailed:1};
+  // 新建隧道时，从承载客户端实例取默认加密/压缩值预填。
+  const defCli = (!isEdit && t.instanceId) ? clientInstance(t.instanceId) : null;
+  const defEnc = isEdit ? (t.useEncryption?true:false) : !!(defCli && defCli.client && defCli.client.useEncryption);
+  const defComp = isEdit ? (t.useCompression?true:false) : !!(defCli && defCli.client && defCli.client.useCompression);
+  const srvLabel = clientServerLabel(t.instanceId);
+  modal(isEdit?'编辑隧道':'新增隧道',`
+    <div class="fgroup">基础设置</div>
+    <div class="frow two">
+      <div><label>隧道名称</label><input id="t_name" value="${esc(t.name||'')}" placeholder="例如 web-1"></div>
+      <div><label>所属客户端实例</label><select id="t_inst">${instOptions(t.instanceId)}</select></div>
+    </div>
+    <div class="frow"><label>连接的服务端</label>
+      <div class="hint" id="t_serverInfo" style="padding:8px 10px;background:var(--control);border:1px solid var(--line);border-radius:8px">${srvLabel}</div>
+    </div>
+    <div class="frow two">
+      <div><label>隧道类型</label><select id="t_type">${TYPES.map(([v,l])=>
+        `<option value="${v}" ${t.type===v?'selected':''}>${l}</option>`).join('')}</select></div>
+      <div></div>
+    </div>
+    <div class="frow two">
+      <div><label>本地地址</label><input id="t_lip" value="${esc(t.localIP||'127.0.0.1')}"></div>
+      <div><label>本地端口</label><input id="t_lport" type="number" value="${t.localPort||''}" placeholder="例如 8080"></div>
+    </div>
+    <div class="frow" id="rowRemote"><label>远程端口</label>
+      <input id="t_rport" type="number" value="${t.remotePort||''}" placeholder="例如 28080">
+      <div class="hint">需落在服务端允许的端口区间内</div></div>
+    <div class="frow hidden" id="rowDomain">
+      <label>自定义域名（多个用逗号分隔）</label>
+      <input id="t_domains" value="${esc((t.customDomains||[]).join(','))}" placeholder="例如 web.example.com">
+      <div class="hint" style="margin-top:8px">子域名（可选，配合服务端子域名后缀）</div>
+      <input id="t_subdomain" value="${esc(t.subdomain||'')}" placeholder="例如 web">
+    </div>
+    <div class="frow hidden" id="rowSecret">
+      <label>加密密钥 secretKey</label><input id="t_secret" value="${esc(t.secretKey||'')}">
+      <div class="hint" style="margin-top:8px">允许访问的用户（多个用逗号分隔，留空不限制）</div>
+      <input id="t_allow" value="${esc(t.group||'')}">
+    </div>
+    <div class="frow two">
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="t_enc" ${defEnc?'checked':''}>
+          <span class="track"></span><span>加密传输</span></label>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="t_comp" ${defComp?'checked':''}>
+          <span class="track"></span><span>压缩传输</span></label>
+      </div>
+    </div>
+    <div class="frow two">
+      <div><label>带宽限制（留空不限制）</label><input id="t_bw" value="${esc(t.bandwidthLimit||'')}" placeholder="例如 1MB"></div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="t_enabled" ${t.enabled?'checked':''}>
+          <span class="track"></span><span>启用该隧道</span></label>
+      </div>
+    </div>
+
+    <div class="fgroup">高级设置</div>
+    <div class="frow two">
+      <div><label>代理协议版本</label><select id="t_ppv">
+        <option value="">自动</option><option value="v1" ${t.proxyProtocolVersion==='v1'?'selected':''}>v1</option>
+        <option value="v2" ${t.proxyProtocolVersion==='v2'?'selected':''}>v2</option></select></div>
+      <div></div>
+    </div>
+    <div class="frow three">
+      <div><label>健康检查</label><select id="t_hc">
+        <option value="">不启用</option><option value="tcp" ${t.healthCheckType==='tcp'?'selected':''}>TCP</option>
+        <option value="http" ${t.healthCheckType==='http'?'selected':''}>HTTP</option></select></div>
+      <div><label>检查地址 / 路径</label><input id="t_hcurl" value="${esc(t.healthCheckUrl||'')}" placeholder="/health"></div>
+      <div><label>检查间隔（秒）</label><input id="t_hcint" type="number" value="${t.healthCheckInterval||10}"></div>
+    </div>
+    <div class="frow two">
+      <div><label>负载均衡分组（可选）</label>
+        <input id="t_lbgroup" value="${esc(t.loadBalanceGroup||'')}" placeholder="例如 web-cluster"></div>
+      <div><label>负载均衡组标识</label>
+        <input id="t_lbkey" value="${esc(t.loadBalanceKey||'')}" placeholder="同组需一致，留空不启用">
+        <div class="hint">同组内名称相同的多条隧道由服务端轮询分发</div></div>
+    </div>
+
+    <div id="rowHTTP" class="hidden">
+      <div class="frow"><label>路径路由（多个用逗号分隔，留空匹配全部）</label>
+        <input id="t_locations" value="${esc((t.locations||[]).join(','))}" placeholder="例如 /api,/static">
+        <div class="hint">仅 HTTP 类型；按路径前缀把请求分给不同隧道</div></div>
+      <div class="frow two">
+        <div><label>BasicAuth 用户名（可选）</label><input id="t_httpuser" value="${esc(t.httpUser||'')}"></div>
+        <div><label>BasicAuth 密码</label><input id="t_httppwd" type="password" value="${esc(t.httpPassword||'')}"></div>
+      </div>
+      <div class="frow two">
+        <div><label>Host 头改写（可选）</label>
+          <input id="t_hostrewrite" value="${esc(t.hostHeaderRewrite||'')}" placeholder="例如 web.internal">
+          <div class="hint">转发时替换 Host，便于后端按域名分流</div></div>
+        <div><label>按用户路由（可选）</label>
+          <input id="t_routeuser" value="${esc(t.routeByHTTPUser||'')}" placeholder="HTTP 用户名"></div>
+      </div>
+      <div class="frow two">
+        <div><label>请求头改写（每行 K:V）</label>
+          <textarea id="t_reqhdrs" style="min-height:76px" placeholder="X-Real-IP: 1.2.3.4">${esc(headersToText(t.requestHeaders))}</textarea></div>
+        <div><label>响应头改写（每行 K:V）</label>
+          <textarea id="t_resphdrs" style="min-height:76px" placeholder="Cache-Control: no-store">${esc(headersToText(t.responseHeaders))}</textarea></div>
+      </div>
+    </div>
+
+    <div class="frow"><label>备注</label><input id="t_note" value="${esc(t.note||'')}"></div>
+    <div class="row" style="margin-top:16px;justify-content:flex-end">
+      <button id="t_cancel">取消</button>
+      <button class="primary" id="t_save">${isEdit?'保存修改':'创建隧道'}</button>
+    </div>`);
+  const syncRows=()=>{
+    const ty=$('#t_type').value;
+    const domain=ty==='http'||ty==='https'||ty==='tcpmux';
+    const secret=ty==='stcp'||ty==='xtcp'||ty==='sudp';
+    $('#rowRemote').classList.toggle('hidden',domain||secret);
+    $('#rowDomain').classList.toggle('hidden',!domain);
+    $('#rowSecret').classList.toggle('hidden',!secret);
+    $('#rowHTTP').classList.toggle('hidden',ty!=='http');
+  };
+  // 切换客户端实例时，实时刷新「连接的服务端」提示。
+  $('#t_inst').onchange=()=>{
+    const info=$('#t_serverInfo');
+    if(info)info.textContent=clientServerLabel($('#t_inst').value);
+  };
+  $('#t_type').onchange=syncRows; syncRows();
+  $('#t_cancel').onclick=closeModal;
+  $('#t_save').onclick=async()=>{
+    const domains=str('#t_domains').split(',').map(s=>s.trim()).filter(Boolean);
+    const payload={
+      name:str('#t_name'),type:str('#t_type'),localIP:str('#t_lip')||'127.0.0.1',
+      instanceId:str('#t_inst'),
+      localPort:num('#t_lport')||0,remotePort:num('#t_rport')||0,
+      customDomains:domains,subdomain:str('#t_subdomain'),secretKey:str('#t_secret'),
+      group:str('#t_allow'),bandwidthLimit:str('#t_bw'),
+      proxyProtocolVersion:str('#t_ppv'),healthCheckType:str('#t_hc'),
+      healthCheckUrl:str('#t_hcurl'),healthCheckInterval:num('#t_hcint')||0,
+      healthCheckTimeout:t.healthCheckTimeout||3,healthCheckMaxFailed:t.healthCheckMaxFailed||1,
+      loadBalanceGroup:str('#t_lbgroup').trim(),loadBalanceKey:str('#t_lbkey').trim(),
+      locations:str('#t_locations').split(',').map(s=>s.trim()).filter(Boolean),
+      httpUser:str('#t_httpuser').trim(),httpPassword:str('#t_httppwd'),
+      hostHeaderRewrite:str('#t_hostrewrite').trim(),routeByHTTPUser:str('#t_routeuser').trim(),
+      requestHeaders:parseHeaders(str('#t_reqhdrs')),responseHeaders:parseHeaders(str('#t_resphdrs')),
+      useEncryption:$('#t_enc').checked,useCompression:$('#t_comp').checked,
+      note:str('#t_note'),enabled:$('#t_enabled').checked,id:t.id||''
+    };
+    try{
+      if(isEdit) await api('/api/tunnels/'+encodeURIComponent(t.id),{method:'PUT',body:payload});
+      else await api('/api/tunnels',{method:'POST',body:payload});
+      closeModal();toast(isEdit?'隧道已更新':'隧道已创建','ok');
+      await Promise.all([loadTunnels(),loadOverview()]);
+    }catch(e){toast(e.message,'bad');}
+  };
+}
+
+/* ---------------- 导入 / 导出 ---------------- */
+$('#btnImport').onclick=()=>{
+  modal('粘贴 frpc 配置导入',`
+    <div class="hint" style="margin-bottom:10px">
+      支持 frp v1 的 TOML / YAML / JSON 配置，也兼容旧版 INI（[common] 开头）格式。
+      导入会为这份配置新建一个独立的客户端实例（服务端地址与 token 取自配置），
+      与其它实例互不影响。
+    </div>
+    <div class="frow"><textarea id="im_text" style="min-height:250px" placeholder="serverAddr = &quot;1.2.3.4&quot;
+serverPort = 7000
+auth.token = &quot;xxx&quot;
+
+[[proxies]]
+name = &quot;web&quot;
+type = &quot;tcp&quot;
+localIP = &quot;127.0.0.1&quot;
+localPort = 8080
+remotePort = 28080"></textarea></div>
+    <div class="frow"><label class="switch"><input type="checkbox" id="im_over">
+      <span class="track"></span><span>覆盖同名隧道</span></label></div>
+    <div class="row" style="margin-top:14px;justify-content:flex-end">
+      <button id="im_cancel">取消</button>
+      <button class="primary" id="im_ok">解析并导入</button>
+    </div>
+    <div id="im_result" class="hint" style="margin-top:12px"></div>`);
+  $('#im_cancel').onclick=closeModal;
+  $('#im_ok').onclick=async()=>{
+    try{
+      const r=await api('/api/tunnels/import',{method:'POST',body:{
+        content:str('#im_text'),overwrite:$('#im_over').checked}});
+      let html=`<div style="color:var(--ok)">导入完成：新增 ${r.added} 条，跳过 ${r.skipped} 条（格式：${esc(r.format)}）</div>`;
+      if(r.warnings&&r.warnings.length)
+        html+='<div style="margin-top:8px">'+r.warnings.map(w=>'· '+esc(w)).join('<br>')+'</div>';
+      $('#im_result').innerHTML=html;
+      toast(`导入完成，新增 ${r.added} 条隧道`,'ok');
+      await Promise.all([loadInstances(),loadTunnels(),loadOverview(),loadConfig()]);
+    }catch(e){$('#im_result').innerHTML=`<span style="color:var(--bad-txt)">${esc(e.message)}</span>`;}
+  };
+};
+$('#btnExport').onclick=()=>{
+  modal('导出 frpc 配置',`
+    <div class="hint" style="margin-bottom:10px">
+      导出的配置文件可直接配合官方 frpc 二进制使用：frpc -c frpc.toml
+    </div>
+    <div class="frow two">
+      <div><label>格式</label><select id="ex_fmt">
+        <option value="toml">TOML（推荐）</option><option value="json">JSON</option></select></div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="ex_only"><span class="track"></span>
+        <span>仅导出已启用隧道</span></label></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="primary" id="ex_view">生成预览</button>
+      <button id="ex_dl">下载文件</button>
+    </div>
+    <div class="frow" style="margin-top:12px"><textarea id="ex_text" style="min-height:230px" readonly></textarea></div>`);
+  const build=async()=>{
+    const q=`?format=${str('#ex_fmt')}&enabledOnly=${$('#ex_only').checked?1:0}`;
+    const r=await api('/api/tunnels/export'+q);
+    $('#ex_text').value=r.content;
+    return q;
+  };
+  $('#ex_view').onclick=()=>build().catch(e=>toast(e.message,'bad'));
+  $('#ex_dl').onclick=async()=>{
+    try{
+      const q=await build();
+      const res=await fetch('/api/tunnels/export'+q+'&download=1',{credentials:'same-origin'});
+      const blob=await res.blob();
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=str('#ex_fmt')==='json'?'frpc.json':'frpc.toml';
+      a.click();URL.revokeObjectURL(a.href);
+    }catch(e){toast(e.message,'bad');}
+  };
+  build().catch(()=>{});
+};
+
+/* ---------------- 实例管理 ---------------- */
+let INSTANCES=[];
+
+async function loadInstances(){
+  try{
+    const d=await api('/api/instances');
+    INSTANCES=d.instances||[];
+    renderInstances();
+  }catch(e){toast('加载实例失败：'+e.message,'bad');}
+}
+
+function renderInstances(){
+  const servers=INSTANCES.filter(i=>i.kind==='server');
+  const clients=INSTANCES.filter(i=>i.kind==='client');
+  $('#instSummary').textContent=`共 ${INSTANCES.length} 个实例：服务端 ${servers.length} 个，客户端 ${clients.length} 个`;
+  $('#instEmpty').classList.toggle('hidden',INSTANCES.length>0);
+  $('#instList').innerHTML=INSTANCES.map(i=>instCard(i)).join('');
+}
+
+// instCard 渲染单个实例卡片：名称、运行状态、关键参数与操作按钮。
+function instCard(i){
+  const isServer=i.kind==='server';
+  const st=i.running
+    ? '<span class="tag ok">运行中</span>'
+    : (i.enabled?'<span class="tag bad">已停止</span>':'<span class="tag idle">已停用</span>');
+  const bad=i.err?`<div class="hint" style="color:var(--bad-txt);margin-top:6px">${esc(i.err)}</div>`:'';
+
+  // 关键参数按类型分别展示，避免把无关字段铺满卡片。
+  let params=[];
+  if(isServer){
+    const s=i.server||{};
+    params.push(['监听',`${s.bindAddr||'0.0.0.0'}:${s.bindPort||'--'}`]);
+    if(s.dashboardPort)params.push(['仪表盘',`端口 ${s.dashboardPort}`]);
+    if(s.vhostHttpPort||s.vhostHttpsPort)
+      params.push(['虚拟主机',`HTTP ${s.vhostHttpPort||'--'} / HTTPS ${s.vhostHttpsPort||'--'}`]);
+    if(s.subdomainHost)params.push(['子域名后缀',s.subdomainHost]);
+    params.push(['令牌',s.hasToken?'已配置':'未配置']);
+  }else{
+    const c=i.client||{};
+    params.push(['连接',`${c.serverAddr||'--'}:${c.serverPort||'--'}`]);
+    params.push(['协议',(c.transportProtocol||'tcp')+(c.transportTLS?' + TLS':'')]);
+    if(c.user)params.push(['用户名',c.user]);
+    params.push(['令牌',c.hasToken?'已配置':'未配置']);
+    params.push(['隧道',`${i.tunnelCount||0} 条`]);
+  }
+
+  const detail=params.map(([k,v])=>
+    `<div style="display:flex;gap:8px;font-size:12.5px;padding:2px 0">
+       <span class="hint" style="min-width:74px">${esc(k)}</span>
+       <span class="mono" style="word-break:break-all">${esc(v)}</span>
+     </div>`).join('');
+
+  const ports=(i.ports||[]).length
+    ? `<div class="hint" style="margin-top:6px">占用端口：${i.ports.join('、')}</div>`:'';
+
+  // 客户端实例卡片内嵌其名下隧道列表，隧道管理合并进实例页。
+  const tunnels=isServer?[]:TUNNELS.filter(t=>t.instanceId===i.id);
+  const tunnelBlock=isServer?'':
+    `<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">
+       <div class="spread" style="margin-bottom:6px">
+         <span class="hint">名下隧道（${tunnels.length}）</span>
+         <button class="sm primary" data-inst-addtunnel="${esc(i.id)}">＋ 新增隧道</button>
+       </div>
+       ${tunnels.length?`<div style="overflow:auto;-webkit-overflow-scrolling:touch"><table><thead><tr>
+         <th>名称</th><th>类型</th><th>本地</th><th>远程</th><th>访问</th><th>状态</th><th>连接</th><th>客户端</th><th>服务端</th><th>启用</th><th></th>
+       </tr></thead><tbody>${tunnels.map(t=>instTunnelRow(t)).join('')}</tbody></table></div>`
+       :'<div class="empty" style="padding:10px">暂无隧道</div>'}
+     </div>`;
+
+  return `<div class="card" style="margin-bottom:12px">
+    <div class="spread" style="align-items:flex-start">
+      <div style="min-width:0">
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <b style="font-size:14.5px">${esc(i.name)}</b>
+          <span class="tag idle">${esc(i.kindLabel||(isServer?'服务端':'客户端'))}</span>
+          ${st}
+        </div>
+        ${i.note?`<div class="hint" style="margin-top:4px">${esc(i.note)}</div>`:''}
+        <div style="margin-top:9px">${detail}</div>
+        ${ports}
+        ${bad}
+      </div>
+      <div class="row" style="gap:6px;flex:0 0 auto">
+        <label class="switch" title="启用/停用该实例">
+          <input type="checkbox" data-inst-toggle="${esc(i.id)}" ${i.enabled?'checked':''}>
+          <span class="track"></span>
+        </label>
+        <button class="sm" data-inst-edit="${esc(i.id)}">编辑</button>
+        <button class="sm danger" data-inst-del="${esc(i.id)}">删除</button>
+      </div>
+    </div>
+    ${tunnelBlock}
+  </div>`;
+}
+
+// instTunnelRow 渲染实例卡片里的隧道行（精简版，操作同隧道管理页）。
+function instTunnelRow(t){
+  const acc=tunnelAccessURL(t);
+  const accCell=acc
+    ? `<a href="${esc(acc)}" target="_blank" rel="noopener" class="sm" style="text-decoration:none;padding:4px 10px;font-size:12px;border-radius:8px;background:var(--accent);color:#fff;display:inline-block">访问</a>`
+    : '<span class="tag idle">—</span>';
+  const ops=t.external
+    ? `<td colspan="2"><span class="tag idle">只读</span></td>`
+    : `<td><label class="switch"><input type="checkbox" data-enable="${esc(t.id)}" ${t.enabled?'checked':''}>
+       <span class="track"></span></label></td>
+    <td><div class="row" style="gap:5px">
+      <button class="sm" data-edit="${esc(t.id)}">编辑</button>
+      <button class="sm danger" data-del="${esc(t.id)}">删除</button>
+    </div></td>`;
+  return `<tr>
+    <td>${esc(t.name)}</td>
+    <td>${typeTag(t.type)}</td>
+    <td class="mono">${t.localPort?`${esc(t.localIP||'127.0.0.1')}:${t.localPort}`:'--'}</td>
+    <td class="mono">${esc(remoteOf(t)||'-')}</td>
+    <td>${accCell}</td>
+    <td>${phaseTag(t.status,t.err)}</td>
+    <td class="mono">${t.curConns||0}</td>
+    <td>${esc(tunnelClientName(t))}</td>
+    <td class="mono">${esc(tunnelServerAddr(t))}</td>
+    ${ops}
+  </tr>`;
+}
+
+$('#instList').addEventListener('change',async e=>{
+  const id=e.target.dataset.instToggle;
+  const tunnelID=e.target.dataset.enable;
+  if(tunnelID){
+    try{ await api('/api/tunnels/'+encodeURIComponent(tunnelID)+'/toggle',{method:'POST'});
+      toast('隧道状态已更新','ok'); await Promise.all([loadTunnels(),loadOverview(),loadInstances()]);
+    }catch(err){toast(err.message,'bad');}
+    return;
+  }
+  if(!id)return;
+  const want=e.target.checked;
+  try{
+    await api('/api/instances/'+encodeURIComponent(id)+'/toggle',
+      {method:'POST',body:{enable:want}});
+    toast(want?'实例已启用':'实例已停用','ok');
+    await Promise.all([loadInstances(),loadOverview(),loadTunnels()]);
+  }catch(err){
+    toast(err.message,'bad');
+    // 回滚开关，避免界面状态与实际不符。
+    e.target.checked=!want;
+  }
+});
+
+$('#instList').addEventListener('click',async e=>{
+  const ed=e.target.dataset.instEdit, dl=e.target.dataset.instDel, add=e.target.dataset.instAddtunnel;
+  // 隧道操作按钮（启停/编辑/删除）也在实例卡片里，统一在这里处理。
+  const ted=e.target.dataset.edit, tdl=e.target.dataset.del;
+  if(add){ tunnelModal({instanceId:add}); return; }
+  if(ted){ const t=TUNNELS.find(x=>x.id===ted); if(t)tunnelModal(t); return; }
+  if(tdl){
+    const t=TUNNELS.find(x=>x.id===tdl);
+    if(!confirm(`确定删除隧道「${t?t.name:''}」吗？`))return;
+    try{ await api('/api/tunnels/'+encodeURIComponent(tdl),{method:'DELETE'});
+      toast('隧道已删除','ok'); await Promise.all([loadTunnels(),loadOverview(),loadInstances()]);
+    }catch(err){toast(err.message,'bad');}
+    return;
+  }
+  if(ed){const i=INSTANCES.find(x=>x.id===ed);if(i)instanceModal(i);}
+  if(dl){
+    const i=INSTANCES.find(x=>x.id===dl);
+    const n=i?i.tunnelCount:0;
+    const extra=n>0?`\n该实例名下的 ${n} 条隧道会一并删除。`:'';
+    if(!confirm(`确定删除实例「${i?i.name:''}」吗？${extra}\n此操作不可撤销。`))return;
+    try{
+      const r=await api('/api/instances/'+encodeURIComponent(dl),{method:'DELETE'});
+      toast(`实例已删除，同时移除 ${r.removedTunnels||0} 条隧道`,'ok');
+      await Promise.all([loadInstances(),loadOverview(),loadTunnels()]);
+    }catch(err){toast(err.message,'bad');}
+  }
+});
+
+$('#btnAddServerInst').onclick=()=>instanceModal(null,'server');
+$('#btnAddClientInst').onclick=()=>instanceModal(null,'client');
+
+// instanceModal 新增/编辑实例。服务端与客户端共用同一个弹窗，
+// 按 kind 只显示相关字段，避免用户面对一半用不上的选项。
+function instanceModal(inst,kind){
+  const isEdit=!!inst;
+  kind=kind||(inst?inst.kind:'server');
+  const isServer=kind==='server';
+  const s=(inst&&inst.server)||{};
+  const c=(inst&&inst.client)||{};
+  const LOGLEVELS=['trace','debug','info','warn','error'];
+
+  const secretHint=v=>v?'已配置（留空保持不变）':'';
+
+  const serverFields=`
+    <div class="fgroup">基础设置</div>
+    <div class="frow two">
+      <div><label>绑定地址</label><input id="i_bindAddr" value="${esc(s.bindAddr||'0.0.0.0')}"></div>
+      <div><label>绑定端口（frpc 连接端口）</label>
+        <input id="i_bindPort" type="number" value="${s.bindPort||7000}"></div>
+    </div>
+    <div class="frow two">
+      <div><label>认证令牌 token</label>
+        <input id="i_token" placeholder="${esc(secretHint(s.hasToken))}">
+        <div class="hint">客户端必须填写完全一致的令牌</div></div>
+      <div><label>子域名后缀</label>
+        <input id="i_subHost" value="${esc(s.subdomainHost||'')}" placeholder="例如 frp.example.com"></div>
+    </div>
+    <div class="frow two">
+      <div><label>HTTP 虚拟主机端口</label><input id="i_vhttp" type="number" value="${s.vhostHttpPort||0}"></div>
+      <div><label>HTTPS 虚拟主机端口</label><input id="i_vhttps" type="number" value="${s.vhostHttpsPort||0}"></div>
+    </div>
+    <div class="fgroup">高级设置</div>
+    <div class="frow three">
+      <div><label>KCP 端口（0 关闭）</label><input id="i_kcp" type="number" value="${s.kcpBindPort||0}"></div>
+      <div><label>QUIC 端口（0 关闭）</label><input id="i_quic" type="number" value="${s.quicBindPort||0}"></div>
+      <div><label>仪表盘端口</label><input id="i_dashPort" type="number" value="${s.dashboardPort||0}"></div>
+    </div>
+    <div class="frow two">
+      <div><label>仪表盘账号</label><input id="i_dashUser" value="${esc(s.dashboardUser||'admin')}"></div>
+      <div><label>仪表盘密码</label><input id="i_dashPwd" type="password"
+        placeholder="${esc(secretHint(s.hasDashboardPwd))}"></div>
+    </div>
+    <div class="frow three">
+      <div><label>每客户端最大端口数</label><input id="i_maxPorts" type="number" value="${s.maxPortsPerClient||0}"></div>
+      <div><label>允许端口起始</label><input id="i_portStart" type="number" value="${s.allowPortsStart||0}"></div>
+      <div><label>允许端口结束</label><input id="i_portEnd" type="number" value="${s.allowPortsEnd||0}"></div>
+    </div>
+    <div class="frow three">
+      <div><label>日志级别</label><select id="i_logLevel">
+        ${LOGLEVELS.map(l=>`<option value="${l}" ${(s.logLevel||'info')===l?'selected':''}>${l}</option>`).join('')}
+      </select></div>
+      <div><label>日志保留天数</label><input id="i_logDays" type="number" value="${s.logMaxDays||7}"></div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="i_tls" ${s.transportTLS?'checked':''}>
+          <span class="track"></span><span>强制 TLS</span></label>
+      </div>
+    </div>`;
+
+  const clientFields=`
+    <div class="fgroup">基础设置</div>
+    <div class="frow two">
+      <div><label>服务端地址</label><input id="i_addr" value="${esc(c.serverAddr||'127.0.0.1')}"></div>
+      <div><label>服务端端口</label><input id="i_port" type="number" value="${c.serverPort||7000}"></div>
+    </div>
+    <div class="frow two">
+      <div><label>认证令牌 token</label>
+        <input id="i_token" placeholder="${esc(secretHint(c.hasToken))}"></div>
+      <div><label>客户端用户名 user</label>
+        <input id="i_user" value="${esc(c.user||'')}" placeholder="留空则使用默认"></div>
+    </div>
+    <div class="fgroup">高级设置</div>
+    <div class="frow three">
+      <div><label>传输协议</label><select id="i_proto">
+        ${['tcp','kcp','quic','websocket','wss'].map(p=>
+          `<option value="${p}" ${(c.transportProtocol||'tcp')===p?'selected':''}>${p}</option>`).join('')}
+      </select></div>
+      <div><label>日志级别</label><select id="i_logLevel">
+        ${LOGLEVELS.map(l=>`<option value="${l}" ${(c.logLevel||'info')===l?'selected':''}>${l}</option>`).join('')}
+      </select></div>
+      <div><label>日志保留天数</label><input id="i_logDays" type="number" value="${c.logMaxDays||7}"></div>
+    </div>
+    <div class="frow two">
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="i_tls" ${c.transportTLS?'checked':''}>
+          <span class="track"></span><span>启用 TLS</span></label>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="i_failExit" ${c.loginFailExit?'checked':''}>
+          <span class="track"></span><span>登录失败后退出</span></label>
+      </div>
+    </div>
+    <div class="fgroup">新建隧道默认</div>
+    <div class="frow two">
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="i_defEnc" ${c.useEncryption?'checked':''}>
+          <span class="track"></span><span>默认加密传输</span></label>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <label class="switch"><input type="checkbox" id="i_defComp" ${c.useCompression?'checked':''}>
+          <span class="track"></span><span>默认压缩传输</span></label>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:-6px;margin-bottom:4px">
+      这两个是本实例新建隧道时的默认值，可在每条隧道里单独调整；不是 TLS。
+    </div>`;
+
+  modal(isEdit?`编辑实例 · ${inst.name}`:`新增${isServer?'服务端':'客户端'}实例`,`
+    <div class="frow two">
+      <div><label>实例名称</label>
+        <input id="i_name" value="${esc(inst?inst.name:'')}"
+          placeholder="${isServer?'例如 主服务端':'例如 公司内网'}"></div>
+      <div><label>备注（可选）</label><input id="i_note" value="${esc(inst?inst.note:'')}"></div>
+    </div>
+    <div class="frow" style="margin-bottom:4px">
+      <label class="switch"><input type="checkbox" id="i_enable" ${(!isEdit||inst.enabled)?'checked':''}>
+        <span class="track"></span><span>启用该实例</span></label>
+    </div>
+    <div style="border-top:1px solid var(--line);margin:12px 0 14px"></div>
+    ${isServer?serverFields:clientFields}
+    <div class="row" style="margin-top:16px;justify-content:flex-end">
+      <button id="i_cancel">取消</button>
+      <button class="primary" id="i_save">${isEdit?'保存修改':'创建实例'}</button>
+    </div>`);
+
+  $('#i_cancel').onclick=closeModal;
+  $('#i_save').onclick=async()=>{
+    const g=sel=>{const el=$(sel);return el?el.value:'';};
+    const n=sel=>{const el=$(sel);if(!el)return undefined;const v=el.value.trim();return v===''?undefined:Number(v);};
+    const ck=sel=>{const el=$(sel);return el?el.checked:false;};
+    const payload={
+      name:str('#i_name').trim(),kind:kind,note:str('#i_note').trim(),
+      id:inst?inst.id:''
+    };
+    if(isServer){
+      payload.server={
+        enable:ck('#i_enable'),bindAddr:g('#i_bindAddr'),bindPort:n('#i_bindPort')||0,
+        kcpBindPort:n('#i_kcp')||0,quicBindPort:n('#i_quic')||0,
+        dashboardPort:n('#i_dashPort')||0,dashboardUser:g('#i_dashUser'),
+        dashboardPwd:g('#i_dashPwd'),vhostHttpPort:n('#i_vhttp')||0,
+        vhostHttpsPort:n('#i_vhttps')||0,token:g('#i_token'),
+        subdomainHost:g('#i_subHost'),maxPortsPerClient:n('#i_maxPorts')||0,
+        allowPortsStart:n('#i_portStart')||0,allowPortsEnd:n('#i_portEnd')||0,
+        logLevel:g('#i_logLevel'),logMaxDays:n('#i_logDays')||0,
+        transportTLS:ck('#i_tls')
+      };
+    }else{
+      payload.client={
+        enable:ck('#i_enable'),serverAddr:g('#i_addr'),serverPort:n('#i_port')||0,
+        token:g('#i_token'),user:g('#i_user'),transportProtocol:g('#i_proto'),
+        logLevel:g('#i_logLevel'),logMaxDays:n('#i_logDays')||0,
+        transportTLS:ck('#i_tls'),loginFailExit:ck('#i_failExit'),
+        useEncryption:ck('#i_defEnc'),useCompression:ck('#i_defComp')
+      };
+    }
+    try{
+      const r = isEdit
+        ? await api('/api/instances/'+encodeURIComponent(inst.id),{method:'PUT',body:payload})
+        : await api('/api/instances',{method:'POST',body:payload});
+      closeModal();
+      // 后端可能回 200 + warning（实例已存但内核没起来），必须如实告知，
+      // 否则用户会以为一切正常。
+      if(r&&r.warning)toast(r.warning,'bad');
+      else toast(isEdit?'实例已保存':'实例已创建','ok');
+      await Promise.all([loadInstances(),loadOverview(),loadTunnels(),loadConfig()]);
+    }catch(e){toast(e.message,'bad');}
+  };
+}
+
+/* ---------------- 日志 ---------------- */
+function startStreams(){
+  stopStreams();
+  startLogStream();
+  evtSrc=new EventSource('/api/stream/events');
+  evtSrc.addEventListener('status',ev=>{
+    try{
+      const d=JSON.parse(ev.data);
+      HOST=d.host;
+      if(STATUS){STATUS.host=d.host;}
+      renderHost();
+      pushSeries(d.host);
+    }catch(e){}
+  });
+  evtSrc.onerror=()=>{};
+}
+function stopStreams(){
+  if(logSrc){logSrc.close();logSrc=null;}
+  if(evtSrc){evtSrc.close();evtSrc=null;}
+}
+function startLogStream(){
+  if(logSrc)logSrc.close();
+  const lv=$('#logLevel').value||'info';
+  logSrc=new EventSource('/api/logs/stream?level='+encodeURIComponent(lv));
+  logSrc.addEventListener('log',ev=>{
+    try{ addLog(JSON.parse(ev.data)); }catch(e){}
+  });
+}
+function addLog(e){
+  logBuf.push(e);
+  if(logBuf.length>1500)logBuf=logBuf.slice(-1200);
+  const kw=$('#logKeyword').value.trim().toLowerCase();
+  if(kw&&!(e.message+' '+(e.raw||'')+' '+e.source).toLowerCase().includes(kw))return;
+  const srcFilter=$('#logSource')?$('#logSource').value:'';
+  if(srcFilter&&e.source!==srcFilter)return;
+  const box=$('#logbox');
+  const atBottom=box.scrollTop+box.clientHeight>=box.scrollHeight-40;
+  box.insertAdjacentHTML('beforeend',logLine(e,kw));
+  while(box.childElementCount>1200)box.removeChild(box.firstChild);
+  if(atBottom)box.scrollTop=box.scrollHeight;
+  $('#logCount').textContent=box.childElementCount+' 条';
+}
+function logLine(e,kw){
+  let msg=esc(e.message||e.raw||'');
+  if(kw){
+    const i=msg.toLowerCase().indexOf(kw);
+    if(i>=0)msg=msg.slice(0,i)+'<mark>'+msg.slice(i,i+kw.length)+'</mark>'+msg.slice(i+kw.length);
+  }
+  const t=(e.time||'').replace('T',' ').slice(11,19);
+  return `<div class="ln"><span class="t">${esc(t)}</span>`+
+    `<span class="lv ${esc(e.level||'info')}">${esc(e.label||'信息')}</span>`+
+    `<span class="src">${esc(e.source||'')}</span><span class="msg">${msg}</span></div>`;
+}
+function renderLogs(){
+  const kw=$('#logKeyword').value.trim().toLowerCase();
+  const lv=$('#logLevel').value;
+  const srcFilter=$('#logSource')?$('#logSource').value:'';
+  const rank={trace:0,debug:1,info:2,warn:3,error:4,fatal:5};
+  const rows=logBuf.filter(e=>(rank[e.level]||0)>=(rank[lv]||2))
+    .filter(e=>!srcFilter||e.source===srcFilter)
+    .filter(e=>!kw||(e.message+' '+(e.raw||'')+' '+e.source).toLowerCase().includes(kw))
+    .slice(-800);
+  $('#logbox').innerHTML=rows.map(e=>logLine(e,kw)).join('');
+  $('#logbox').scrollTop=$('#logbox').scrollHeight;
+  $('#logCount').textContent=rows.length+' 条';
+}
+$('#logLevel').onchange=()=>{startLogStream();renderLogs();};
+if($('#logSource'))$('#logSource').onchange=renderLogs;
+let kwTimer=null;
+$('#logKeyword').oninput=()=>{clearTimeout(kwTimer);kwTimer=setTimeout(renderLogs,180);};
+$('#logLive').onchange=e=>{ if(e.target.checked)startLogStream(); else if(logSrc){logSrc.close();logSrc=null;} };
+$('#btnLogClear').onclick=()=>{logBuf=[];renderLogs();};
+$('#btnLogExport').onclick=()=>{
+  const a=document.createElement('a');
+  a.href='/api/logs/export?download=1';a.click();
+};
+$('#btnLogAnalyze').onclick=async()=>{
+  if(analyzing)return; analyzing=true;
+  try{
+    const r=await api('/api/logs/analyze');
+    const list=r.issues||[];
+    modal('问题定位',list.length?list.map(i=>`
+      <div class="card" style="margin-bottom:10px;background:var(--row-hover)">
+        <div class="spread" style="margin-bottom:6px">
+          <b>${esc(i.title)}</b><span class="tag warn">出现 ${i.count} 次</span></div>
+        <div class="hint">可能原因：${esc(i.cause)}</div>
+        <div class="hint" style="margin-top:4px;color:var(--ok-txt)">处理建议：${esc(i.fix)}</div>
+        <div class="hint mono" style="margin-top:6px;opacity:.75">样例：${esc(i.sample||'')}</div>
+      </div>`).join(''):'<div class="empty">最近没有发现需要处理的问题</div>');
+  }catch(e){toast(e.message,'bad');}
+  analyzing=false;
+};
+
+/* ---------------- QQ 扫码绑定 ---------------- */
+// qqOfficialHint 在「启用」已打开但凭据缺失时给出明确指引，
+// 避免用户看到「未填写 AppID」却不知道该去哪配。
+function qqOfficialHint(){
+  const on=$('#qo_enable').checked;
+  const hasCreds=str('#qo_appid').trim()&&str('#qo_secret').trim();
+  const el=$('#qoCredHint');
+  if(!el)return;
+  if(on&&!hasCreds){
+    el.classList.remove('hidden');
+    el.textContent='已启用但尚未配置凭据：点上方「扫码绑定」用手机 QQ 扫码即可自动填入，或手动填写 AppID 与 AppSecret。';
+  }else{
+    el.classList.add('hidden');
+  }
+}
+$('#qo_enable').onchange=qqOfficialHint;
+$('#qo_appid').oninput=qqOfficialHint;
+$('#qo_secret').oninput=qqOfficialHint;
+// 手动改动 openid 后立刻重新校验，不必等下次刷新状态。
+$('#qo_groups').oninput=()=>qqOpenIDCheck();
+$('#qo_user').oninput=()=>qqOpenIDCheck();
+
+let QQ_BIND_TIMER=null, QQ_BIND_LEFT=0;
+function qqBindStop(){
+  if(QQ_BIND_TIMER){ clearInterval(QQ_BIND_TIMER); QQ_BIND_TIMER=null; }
+}
+function qqBindShow(info){
+  $('#qqBindBox').classList.remove('hidden');
+  if(info.qrDataUrl)$('#qqBindQR').src=info.qrDataUrl;
+  $('#qqBindStatus').textContent=info.status||'等待扫码';
+  $('#qqBindStatus').className='tag idle';
+  QQ_BIND_LEFT=info.expiresIn>0?info.expiresIn:150;
+  qqBindStop();
+  QQ_BIND_TIMER=setInterval(async()=>{
+    QQ_BIND_LEFT--;
+    $('#qqBindTimer').textContent=QQ_BIND_LEFT>0?`二维码约 ${QQ_BIND_LEFT} 秒后过期`:'二维码可能已过期，可取消后重新生成';
+    if(QQ_BIND_LEFT<=0)qqBindStop();
+    try{
+      const r=await api('/api/qqbot/bind/poll',{method:'POST'});
+      $('#qqBindStatus').textContent=r.status||'等待扫码';
+      if(r.success){
+        qqBindStop();
+        $('#qqBindStatus').textContent='绑定成功';
+        $('#qqBindStatus').className='tag ok';
+        toast('扫码绑定成功，已自动填入 AppID 并开启事件监听','ok');
+        // 回填凭据与开关，让用户看到结果
+        fill('#qo_appid',r.appId);
+        if(r.userOpenId&&!str('#qo_user'))fill('#qo_user',r.userOpenId);
+        fill('#qo_enable',true);
+        fill('#qo_listen',true);
+        qqOfficialHint();
+        setTimeout(()=>{ $('#qqBindBox').classList.add('hidden'); loadQQBotStatus(); },2200);
+      }else if((r.statusCode||0)===3){
+        qqBindStop();
+        $('#qqBindStatus').className='tag bad';
+        $('#qqBindStatus').textContent='二维码已过期';
+      }else if((r.statusCode||0)===1){
+        $('#qqBindStatus').className='tag warn';
+      }
+    }catch(e){ /* 轮询失败保持静默，等待下一轮 */ }
+  },2500);
+}
+$('#btnQQBind').onclick=async()=>{
+  const b=$('#btnQQBind');b.disabled=true;b.textContent='生成中...';
+  try{
+    const r=await api('/api/qqbot/bind',{method:'POST',body:{source:'YCFRP'}});
+    qqBindShow(r);
+    toast('二维码已生成，请用手机 QQ 扫码','ok');
+  }catch(e){ toast('生成二维码失败：'+e.message,'bad'); }
+  b.disabled=false;b.textContent='扫码绑定';
+};
+$('#btnQQBindCancel').onclick=async()=>{
+  qqBindStop();
+  try{ await api('/api/qqbot/bind',{method:'DELETE'}); }catch(e){}
+  $('#qqBindBox').classList.add('hidden');
+  toast('已取消绑定','ok');
+};
+// 页面加载时若已有进行中的会话则恢复显示
+async function qqBindRestore(){
+  try{
+    const r=await api('/api/qqbot/bind');
+    if(r&&r.qrDataUrl&&r.expiresIn>0)qqBindShow(r);
+  }catch(e){}
+}
+
+/* ---------------- QQ 官方机器人 ---------------- */
+let QQ_TIMER=null;
+let QQ_DISCOVERED=[];
+async function loadQQBotStatus(){
+  try{
+    const r=await api('/api/qqbot/status');
+    const st=r.status||{};
+    const tag=$('#qoConn');
+    if(!r.listen){
+      tag.className='tag idle';tag.textContent='未开启监听';
+    }else if(!r.hasCreds){
+      tag.className='tag warn';tag.textContent='缺少 AppID/Secret';
+    }else if(st.connected){
+      tag.className='tag ok';tag.textContent='已连接';
+    }else if(st.running){
+      tag.className='tag warn';tag.textContent='连接中';
+    }else{
+      tag.className='tag bad';tag.textContent='未连接';
+    }
+    const bits=[];
+    if(st.lastEventAt)bits.push(`最近事件 ${st.lastEventAt}`);
+    if(st.lastEvent)bits.push(`类型 ${st.lastEvent}`);
+    if(st.events)bits.push(`累计 ${st.events} 条`);
+    if(st.lastError)bits.push(`错误：${st.lastError}`);
+    $('#qoStatusText').textContent=bits.join(' · ');
+    renderDiscovered(r.discovered||[]);
+    qqOpenIDCheck(r.discovered||[]);
+  }catch(e){ $('#qoStatusText').textContent='读取状态失败：'+e.message; }
+}
+// qqOpenIDCheck 校验已填的 openid 是否属于当前机器人。
+// openid 由 QQ 按机器人分别生成，跨机器人复制过来只会得到「资源不存在」，
+// 提前点出来比让用户对着泛化报错排查省事得多。
+function qqOpenIDCheck(list){
+  if(list)QQ_DISCOVERED=list;
+  list=QQ_DISCOVERED;
+  const el=$('#qoWarn');if(!el)return;
+  const known=new Set();
+  (list||[]).forEach(d=>{if(d.groupOpenId)known.add(d.groupOpenId);if(d.userOpenId)known.add(d.userOpenId);});
+  if(!known.size){el.classList.add('hidden');return;}
+  const bad=[];
+  const groups=str('#qo_groups').trim().split(',').map(s=>s.trim()).filter(Boolean);
+  groups.forEach(g=>{if(!known.has(g))bad.push('群 '+g);});
+  const u=str('#qo_user').trim();
+  if(u&&!known.has(u))bad.push('用户 '+u);
+  if(!bad.length){el.classList.add('hidden');return;}
+  el.classList.remove('hidden');
+  el.textContent='⚠ 以下 openid 不属于当前机器人：'+bad.join('、')
+    +'。openid 由 QQ 按机器人分别生成、跨机器人不通用，'
+    +'若这是从别的面板复制来的，请改用下方「自动发现」里本机器人捕获到的 openid 并点「填入」。';
+}
+function renderDiscovered(list){
+  if(!list.length){
+    $('#qoDiscovered').innerHTML='<div class="empty" style="padding:16px">还没有发现 openid。开启监听后，把机器人拉进群并在群里 @ 一次。</div>';
+    return;
+  }
+  $('#qoDiscovered').innerHTML=list.slice().reverse().map(d=>{
+    const id=d.groupOpenId||d.userOpenId||'';
+    const isGroup=!!d.groupOpenId;
+    return `<div class="row" style="justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--row-hover);margin-bottom:8px">
+      <div style="min-width:0">
+        <div class="mono" style="word-break:break-all">${esc(id)}</div>
+        <div class="hint">${isGroup?'群':'用户'} · ${esc(d.kind||'')} · ${esc(d.at||'')}${d.msgId?' · 含消息ID':''}</div>
+      </div>
+      <div class="row" style="gap:6px;flex:0 0 auto">
+        <button class="sm" data-use="${esc(id)}" data-kind="${isGroup?'group':'user'}" data-mid="${esc(d.msgId||'')}">填入</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+$('#qoDiscovered').addEventListener('click',async e=>{
+  const btn=e.target.closest('[data-use]');if(!btn)return;
+  const id=btn.dataset.use, kind=btn.dataset.kind, mid=btn.dataset.mid||'';
+  if(kind==='group'){
+    const cur=str('#qo_groups').trim();
+    const parts=cur?cur.split(',').map(s=>s.trim()).filter(Boolean):[];
+    if(!parts.includes(id))parts.push(id);
+    $('#qo_groups').value=parts.join(',');
+  }else{
+    $('#qo_user').value=id;
+  }
+  // 一并带上消息 ID：被动回复不受主动消息额度限制，发送成功率更高。
+  if(mid){
+    fill('#qo_msgid',mid);
+    toast('已填入 openid 与消息 ID（被动回复方式，成功率更高）','ok');
+  }else{
+    toast('已填入，记得点击「保存通知设置」生效','ok');
+  }
+  qqOpenIDCheck();
+});
+$('#btnQQRefresh').onclick=async()=>{
+  const b=$('#btnQQRefresh');b.disabled=true;b.textContent='刷新中...';
+  await loadQQBotStatus();
+  b.disabled=false;b.textContent='刷新状态';
+};
+$('#btnQQClear').onclick=async()=>{
+  if(!confirm('确定清空已发现的 openid 记录吗？'))return;
+  try{ await api('/api/qqbot/discover',{method:'DELETE'}); toast('记录已清空','ok'); loadQQBotStatus(); }
+  catch(e){ toast(e.message,'bad'); }
+};
+// 通知页可见时定时刷新连接状态，便于等待事件到达。
+setInterval(()=>{
+  const page=$$('section[data-view]').find(s=>!s.classList.contains('hidden'));
+  if(page&&page.dataset.view==='settings'){const t=localStorage.getItem('ycfrp_settings_tab')||'notify';if(t==='notify')loadQQBotStatus();}
+},8000);
+
+/* ---------------- 通知 ---------------- */
+function renderChannels(){
+  $('#channelList').innerHTML=CHANNELS.map((c,i)=>`
+    <div class="card" style="margin-bottom:10px;background:var(--row-hover)">
+      <div class="frow three">
+        <div><label>通道名称</label><input data-ch="${i}" data-k="name" value="${esc(c.name||'')}"></div>
+        <div><label>请求方式</label><select data-ch="${i}" data-k="type">
+          <option value="post" ${c.type!=='get'?'selected':''}>POST（JSON）</option>
+          <option value="get" ${c.type==='get'?'selected':''}>GET</option></select></div>
+        <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+          <label class="switch"><input type="checkbox" data-ch="${i}" data-k="enable" ${c.enable?'checked':''}>
+            <span class="track"></span><span>启用</span></label></div>
+      </div>
+      <div class="frow"><label>Webhook 地址</label>
+        <input data-ch="${i}" data-k="url" value="${esc(c.url||'')}" placeholder="https://..."></div>
+      <div class="frow two">
+        <div><label>附加密钥（可选）</label><input data-ch="${i}" data-k="secret" value="${esc(c.secret||'')}"></div>
+        <div style="display:flex;align-items:flex-end"><button class="sm danger" data-chdel="${i}">删除该通道</button></div>
+      </div>
+    </div>`).join('');
+  $('#channelEmpty').classList.toggle('hidden',CHANNELS.length>0);
+}
+$('#channelList').addEventListener('input',e=>{
+  const el=e.target,i=el.dataset.ch,k=el.dataset.k;
+  if(i==null||!k)return;
+  CHANNELS[i][k]=el.type==='checkbox'?el.checked:el.value;
+});
+$('#channelList').addEventListener('change',e=>{
+  const el=e.target,i=el.dataset.ch,k=el.dataset.k;
+  if(i!=null&&k)CHANNELS[i][k]=el.type==='checkbox'?el.checked:el.value;
+});
+$('#channelList').addEventListener('click',e=>{
+  const i=e.target.dataset.chdel;if(i==null)return;
+  CHANNELS.splice(Number(i),1);renderChannels();
+});
+$('#btnAddChannel').onclick=()=>{
+  CHANNELS.push({id:'',name:'新通道',type:'post',enable:false,url:'',secret:'',headers:{}});
+  renderChannels();
+};
+$('#btnSaveNotify').onclick=async()=>{
+  // 密钥输入框留空表示保持原值，因此不把空值提交上去，
+  // 否则会把已保存的密钥覆盖成空（后端也有保护，这里是双保险）。
+  const secret=(sel)=>{const v=str(sel).trim();return v===''?undefined:v;};
+  try{
+    const payload={notify:{
+      enable:$('#n_enable').checked,monitorErrors:$('#n_err').checked,
+      monitorOffline:$('#n_off').checked,monitorTraffic:$('#n_traffic').checked,
+      keywords:str('#n_keywords').split(',').map(s=>s.trim()).filter(Boolean),
+      quietMinutes:num('#n_quiet')||5,
+      qq:{enable:$('#q_enable').checked,protocol:str('#q_proto'),host:str('#q_host'),
+        port:num('#q_port'),adminQQ:str('#q_admin'),
+        groupIds:str('#q_groups').split(',').map(s=>s.trim()).filter(Boolean)},
+      qqOfficial:{enable:$('#qo_enable').checked,appId:str('#qo_appid').trim(),
+        sandbox:$('#qo_sandbox').checked,
+        groupOpenIds:str('#qo_groups'),userOpenId:str('#qo_user').trim(),msgId:str('#qo_msgid').trim(),
+        proxy:str('#qo_proxy').trim(),listen:$('#qo_listen').checked},
+      wecom:{enable:$('#wc_enable').checked,
+        mentionList:str('#wc_mention'),mentionAll:$('#wc_all').checked},
+      dingtalk:{enable:$('#dt_enable').checked,webhook:str('#dt_hook').trim(),
+        atMobiles:str('#dt_mobiles'),atAll:$('#dt_all').checked},
+      feishu:{enable:$('#fs_enable').checked,webhook:str('#fs_hook').trim()},
+      serverChan:{enable:$('#sc_enable').checked,channel:str('#sc_channel').trim()},
+      bark:{enable:$('#bk_enable').checked,server:str('#bk_server').trim(),group:str('#bk_group').trim()},
+      telegram:{enable:$('#tg_enable').checked,chatId:str('#tg_chat').trim(),proxy:str('#tg_proxy').trim()},
+      channels:CHANNELS
+    }};
+    // 仅在用户填了新值时才带上密钥字段。
+    const at=secret('#q_token'); if(at!==undefined)payload.notify.qq.accessToken=at;
+    const as=secret('#qo_secret'); if(as!==undefined)payload.notify.qqOfficial.appSecret=as;
+    const wk=secret('#wc_key'); if(wk!==undefined)payload.notify.wecom.key=wk;
+    const ds=secret('#dt_secret'); if(ds!==undefined)payload.notify.dingtalk.secret=ds;
+    const fes=secret('#fs_secret'); if(fes!==undefined)payload.notify.feishu.secret=fes;
+    const sck=secret('#sc_key'); if(sck!==undefined)payload.notify.serverChan.sendKey=sck;
+    const bdk=secret('#bk_key'); if(bdk!==undefined)payload.notify.bark.deviceKey=bdk;
+    const tgt=secret('#tg_token'); if(tgt!==undefined)payload.notify.telegram.botToken=tgt;
+
+    await api('/api/config',{method:'PUT',body:payload});
+    toast('通知设置已保存','ok');
+    await loadConfig();
+  }catch(e){toast(e.message,'bad');}
+};
+$('#btnTestNotify').onclick=async()=>{
+  $('#testResult').textContent='正在发送测试通知 ...';
+  try{
+    const r=await api('/api/notify/test',{method:'POST'});
+    $('#testResult').innerHTML=(r.results||[]).map(x=>
+      `<div style="color:${x.ok?'var(--ok-txt)':'var(--bad-txt)'}">${x.ok?'✔':'✖'} ${esc(x.channel)}${x.ok?' 推送成功':'：'+esc(x.error||'失败')}</div>`
+    ).join('')||'未配置任何启用的通道';
+    toast(r.anySuccess?'测试通知已发出':'测试通知发送失败',r.anySuccess?'ok':'bad');
+  }catch(e){$('#testResult').innerHTML=`<span style="color:var(--bad-txt)">${esc(e.message)}</span>`;}
+};
+
+/* ---------------- 界面自定义 ---------------- */
+const PRESETS=[
+  ['w1','深空蓝','linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c3aed)'],
+  ['w2','暮光紫','linear-gradient(135deg,#1b1035,#4c1d95 60%,#be185d)'],
+  ['w3','暗夜森林','linear-gradient(135deg,#052e2b,#065f46 55%,#0e7490)'],
+  ['w4','熔岩橙','linear-gradient(135deg,#1c0a00,#7c2d12 55%,#b45309)'],
+  ['w5','极简灰','linear-gradient(135deg,#111827,#1f2937 60%,#374151)'],
+  ['w6','海洋青','linear-gradient(135deg,#042f2e,#0e7490 55%,#1d4ed8)']
+];
+function renderPresets(){
+  const cur=$('#u_wallUrl').value;
+  $('#presetGrid').innerHTML=PRESETS.map(([id,name,bg])=>
+    `<div class="preset ${(!cur&&$('#u_wallUrl').dataset.preset===id)?'on':''}" data-preset="${id}"
+      style="background:${bg};display:grid;place-items:end center;color:#fff;font-size:12px">
+      <span style="padding:4px">${name}</span></div>`).join('');
+}
+$('#presetGrid').addEventListener('click',e=>{
+  const el=e.target.closest('[data-preset]');if(!el)return;
+  $('#u_wallUrl').value='';
+  $('#u_wallUrl').dataset.preset=el.dataset.preset;
+  renderPresets();
+  // 立即应用所选预设，不等保存 —— 不然点了看起来毫无反应，
+  // 用户会以为点击无效又去点别的。
+  applyUI({wallpaperUrl:'',wallpaper:el.dataset.preset,
+    wallpaperOpacity:Number($('#u_opacity').value)},false);
+});
+async function loadWallpapers(){
+  try{
+    const r=await api('/api/ui/wallpapers');
+    const cur=$('#u_wallUrl').value;
+    $('#wallGrid').innerHTML=(r.wallpapers||[]).map(u=>`
+      <div class="wallitem ${cur===u?'on':''}" data-url="${esc(u)}">
+        <img src="${esc(u)}" alt=""><span>点击使用</span>
+        <button class="wall-del" data-del="${esc(u)}" title="删除这张图片">✕</button>
+      </div>`).join('')||'<div class="hint">还没有上传自定义图片</div>';
+  }catch(e){}
+}
+$('#wallGrid').addEventListener('click',async e=>{
+  const del=e.target.dataset.del;
+  if(del){
+    if(!confirm('确定删除这张图片吗？'))return;
+    try{ await api('/api/ui/wallpaper?url='+encodeURIComponent(del),{method:'DELETE'});
+      toast('图片已删除','ok');await loadWallpapers();await loadConfig();
+    }catch(err){toast(err.message,'bad');}
+    return;
+  }
+  const item=e.target.closest('[data-url]');if(!item)return;
+  $('#u_wallUrl').value=item.dataset.url;
+  delete $('#u_wallUrl').dataset.preset;
+  applyUI({wallpaperUrl:item.dataset.url,
+    wallpaperOpacity:Number($('#u_opacity').value)},false);
+  loadWallpapers();
+});
+$('#btnUploadWall').onclick=()=>$('#wallFile').click();
+$('#wallFile').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  const fd=new FormData();fd.append('file',f);
+  try{
+    const res=await fetch('/api/ui/upload',{method:'POST',body:fd,credentials:'same-origin'});
+    const data=await res.json();
+    if(!res.ok||data.ok===false)throw new Error(data.error||'上传失败');
+    toast('图片上传成功','ok');
+    $('#u_wallUrl').value=data.data.url;
+    applyUI({wallpaperUrl:data.data.url},true);
+    await loadWallpapers();
+  }catch(err){toast(err.message,'bad');}
+  e.target.value='';
+};
+$('#u_accent').oninput=()=>{$('#u_accentText').value=$('#u_accent').value;
+  document.documentElement.style.setProperty('--accent',$('#u_accent').value);};
+$('#u_accentText').oninput=()=>{
+  const v=$('#u_accentText').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){$('#u_accent').value=v;
+    document.documentElement.style.setProperty('--accent',v);}
+};
+$('#u_opacity').oninput=()=>applyUI({wallpaperOpacity:Number($('#u_opacity').value)},true);
+$('#u_glass').onchange=async()=>{
+  const next=$('#u_glass').checked;
+  document.body.classList.toggle('glass-off',!next);
+  try{
+    await api('/api/config',{method:'PUT',body:{ui:{glassEffect:next}}});
+    toast(next?'已开启毛玻璃效果':'已关闭毛玻璃效果','ok');
+  }catch(e){
+    document.body.classList.toggle('glass-off',next);
+    $('#u_glass').checked=!next;
+    toast('毛玻璃切换失败：'+e.message,'bad');
+  }
+};
+// 主题下拉即时生效并保存：改一下拉就要点保存才变化，容易被当成没生效。
+$('#u_theme').onchange=async()=>{
+  const next=str('#u_theme');
+  document.body.classList.toggle('light',next==='light');
+  syncThemeButton();
+  redrawActiveChart();
+  try{
+    await api('/api/config',{method:'PUT',body:{ui:{theme:next}}});
+    toast(next==='light'?'已切换为浅色主题':'已切换为深色主题','ok');
+  }catch(e){
+    document.body.classList.toggle('light',next!=='light');
+    syncThemeButton();
+    toast('主题切换失败：'+e.message,'bad');
+  }
+};
+$('#btnSaveUI').onclick=async()=>{
+  try{
+    await api('/api/config',{method:'PUT',body:{ui:{
+      siteName:str('#u_siteName'),accentColor:str('#u_accent'),
+      siteFooter:str('#u_footer'),theme:str('#u_theme'),
+      wallpaperUrl:str('#u_wallUrl'),
+      wallpaper:str('#u_wallUrl')?'custom':($('#u_wallUrl').dataset.preset||'w1'),
+      wallpaperOpacity:Number($('#u_opacity').value),
+      glassEffect:$('#u_glass').checked,
+      navLayout:str('#u_navlayout'),uiStyle:str('#u_uistyle')
+    }}});
+    META=await api('/api/meta');
+    $('#siteName').textContent=META.ui.siteName||META.product;
+    // 界面页可能改了主题，顶栏按钮要跟着同步。
+    document.body.classList.toggle('light',(META.ui.theme||'dark')==='light');
+    applyNavLayout(META.ui.navLayout||'top');
+    applyUIStyle(META.ui.uiStyle||'default');
+    syncThemeButton();
+    redrawActiveChart();
+    toast('界面设置已保存','ok');
+  }catch(e){toast(e.message,'bad');}
+};
+
+// applyNavLayout 切换主导航布局：top / left / right。
+function applyNavLayout(layout){
+  document.body.classList.remove('nav-left','nav-right');
+  if(layout==='left')document.body.classList.add('nav-left');
+  else if(layout==='right')document.body.classList.add('nav-right');
+  // 同步高亮顶栏切换按钮与界面页下拉。
+  const t=$('#navLayoutToggle');
+  if(t)$$('#navLayoutToggle button').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout));
+  const sel=$('#u_navlayout'); if(sel)sel.value=layout;
+}
+// 导航布局下拉即时生效并保存。
+$('#u_navlayout').onchange=async()=>{
+  const v=str('#u_navlayout');
+  applyNavLayout(v);
+  redrawActiveChart();
+  try{ await api('/api/config',{method:'PUT',body:{ui:{navLayout:v}}}); }
+  catch(e){ toast(e.message,'bad'); }
+};
+// 顶栏布局切换按钮组：点击即时切换并保存。
+$('#navLayoutToggle').addEventListener('click',async e=>{
+  const b=e.target.closest('button[data-layout]');if(!b)return;
+  const v=b.dataset.layout;
+  applyNavLayout(v);
+  redrawActiveChart();
+  try{ await api('/api/config',{method:'PUT',body:{ui:{navLayout:v}}}); }
+  catch(err){ toast(err.message,'bad'); }
+});
+
+// applyUIStyle 切换界面视觉样式，用 body 上的类触发不同 CSS 变量覆盖。
+function applyUIStyle(style){
+  document.body.classList.remove('ui-crystal','ui-retro','ui-neon','ui-minimal','ui-vivid','ui-round');
+  if(style&&style!=='default')document.body.classList.add('ui-'+style);
+}
+$('#u_uistyle').onchange=async()=>{
+  const v=str('#u_uistyle');
+  applyUIStyle(v);
+  try{ await api('/api/config',{method:'PUT',body:{ui:{uiStyle:v}}}); }
+  catch(e){ toast(e.message,'bad'); }
+};
+function applyUI(ui,persist){
+  if(!ui)return;
+  if(ui.accentColor)document.documentElement.style.setProperty('--accent',ui.accentColor);
+  const wp=$('#wallpaper');
+  // 未显式传入 wallpaperUrl / wallpaper 时从 DOM 补全，避免只改透明度就把背景覆盖回预设。
+  const url=ui.wallpaperUrl!==undefined?ui.wallpaperUrl:$('#u_wallUrl').value;
+  const wpid=ui.wallpaper!==undefined?ui.wallpaper:($('#u_wallUrl').dataset.preset||'w1');
+  let bg='';
+  if(url){ bg=`url('${url}') center/cover no-repeat`; }
+  else{
+    const p=PRESETS.find(x=>x[0]===wpid);
+    if(p)bg=p[2];
+  }
+  wp.style.background=bg;
+  // 透明度对所有壁纸（含自定义原图）都生效：默认 1 原图直出，拖低变淡。
+  const op=Number(ui.wallpaperOpacity);
+  wp.style.opacity=isNaN(op)?1:op;
+  if(ui.glassEffect!==undefined)document.body.classList.toggle('glass-off',!ui.glassEffect);
+  if(ui.theme!==undefined)document.body.classList.toggle('light',ui.theme==='light');
+  if(ui.navLayout!==undefined)applyNavLayout(ui.navLayout);
+  if(ui.uiStyle!==undefined)applyUIStyle(ui.uiStyle);
+  syncThemeButton();
+  if(ui.siteFooter){/* 页脚在需要时展示 */}
+  if(persist)renderPresets();
+}
+
+// syncThemeButton 让顶栏的主题按钮与当前主题保持一致。
+// 按钮文字固定显示「点击后切换到的主题」，所有改变主题的路径都要调用它，
+// 否则按钮就会与实际主题不同步（之前存在的问题）。
+function syncThemeButton(){
+  const btn=$('#btnTheme');
+  if(btn)btn.textContent=document.body.classList.contains('light')?'深色':'浅色';
+}
+$('#btnTheme').onclick=async()=>{
+  const next=document.body.classList.contains('light')?'dark':'light';
+  document.body.classList.toggle('light',next==='light');
+  syncThemeButton();
+  redrawActiveChart();
+  try{
+    await api('/api/config',{method:'PUT',body:{ui:{theme:next}}});
+    toast(next==='light'?'已切换为浅色主题':'已切换为深色主题','ok');
+  }catch(e){
+    document.body.classList.toggle('light',next!=='light');
+    syncThemeButton();
+    toast('主题切换失败：'+e.message,'bad');
+  }
+};
+
+$('#btnSaveAuto').onclick=async()=>{
+  try{
+    await api('/api/config',{method:'PUT',body:{update:{
+      checkEnabled:$('#up_auto').checked,
+      checkIntervalHours:Number($('#up_interval').value)||6,
+      notifyOnUpdate:$('#up_notify').checked}}});
+    toast($('#up_auto').checked?'已开启自动检查更新':'已关闭自动检查更新','ok');
+    await loadUpdateInfo();
+  }catch(e){toast(e.message,'bad');}
+};
+$('#btnCheckNow').onclick=async()=>{
+  const b=$('#btnCheckNow');b.disabled=true;b.textContent='检查中...';
+  $('#upAutoResult').textContent='正在检查 ...';
+  try{
+    const r=await api('/api/update/checknow',{method:'POST'});
+    UPDATE_LATEST=r;
+    $('#upLatest').textContent=r.latest||'-';
+    $('#upLatest').style.color=r.hasUpdate?'var(--warn)':'var(--ok)';
+    $('#upLatestSub').textContent=r.hasUpdate?'有新版本可用':'已是最新版本';
+    if(r.hasUpdate){
+      $('#upAutoResult').innerHTML=`<span style="color:var(--warn-txt)">发现新版本 ${esc(r.latest)}，已按设置推送通知${r.notes?' · '+esc(r.notes):''}</span>`;
+      $('#btnOnlineUpdate').disabled=!r.canAuto;
+    }else{
+      $('#upAutoResult').innerHTML=`<span style="color:var(--ok-txt)">当前已是最新版本 ${esc(r.latest)}</span>`;
+    }
+    await loadUpdateInfo();
+  }catch(e){
+    $('#upAutoResult').innerHTML=`<span style="color:var(--bad-txt)">检查失败：${esc(e.message)}</span>`;
+  }
+  b.disabled=false;b.textContent='立即检查一次';
+};
+
+/* ---------------- 更新日志 ---------------- */
+const LOG_KIND={add:['新增','ok'],fix:['修复','warn'],change:['调整','idle']};
+function renderChangelog(list){
+  if(!list||!list.length){
+    $('#upChangelog').innerHTML='更新源未提供版本说明。';
+    return;
+  }
+  $('#upChangelog').innerHTML=list.map(it=>{
+    const k=LOG_KIND[it.kind]||LOG_KIND.change;
+    const items=(it.items||[]).map(x=>`<div class="hint" style="margin-top:5px">· ${esc(x)}</div>`).join('');
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--line)">
+      <div class="row" style="gap:8px">
+        <b class="mono" style="font-size:13px">${esc(it.version||'')}</b>
+        <span class="tag ${k[1]}">${k[0]}</span>
+        <span class="hint">${esc(it.date||'')}</span>
+      </div>
+      ${items}
+    </div>`;
+  }).join('');
+}
+$('#btnLoadChangelog').onclick=async()=>{
+  const b=$('#btnLoadChangelog');b.disabled=true;b.textContent='加载中...';
+  try{
+    const r=await api('/api/update/check');
+    renderChangelog(r.changelog);
+    toast('更新日志已加载','ok');
+  }catch(e){
+    $('#upChangelog').innerHTML=`<span style="color:var(--bad-txt)">加载失败：${esc(e.message)}</span>`;
+  }
+  b.disabled=false;b.textContent='加载更新日志';
+};
+
+/* ---------------- 更新 ---------------- */
+let UPDATE_INFO=null, UPDATE_LATEST=null, PICKED_PKG=null, UPDATE_MODE=null;
+
+async function loadUpdateInfo(){
+  try{
+    const m=await api('/api/meta');
+    META=m;
+    UPDATE_INFO=m.update||{};
+    UPDATE_MODE=m.updateMode||{};
+    $('#upCur').textContent=UPDATE_INFO.current||'-';
+    $('#upCurSub').textContent='内核 '+(m.kernelVersion||'-');
+    $('#upPlatform').textContent=UPDATE_INFO.platform||'-';
+    if($('#up_source').value==='')$('#up_source').value=UPDATE_INFO.source||'';
+    if($('#up_proxy').value==='')$('#up_proxy').value=UPDATE_INFO.proxy||'';
+    // 自动检查设置回显
+    fill('#up_auto',UPDATE_INFO.checkEnabled);
+    if($('#up_interval').value==='')$('#up_interval').value=UPDATE_INFO.checkHours||6;
+    fill('#up_notify',UPDATE_INFO.notifyOnUpdate!==false);
+    const last=UPDATE_INFO.lastResult;
+    if(last){
+      const when=last.checkedAt||'';
+      let line=`最近检查：${when}`;
+      if(last.err)line+=` · 失败：${esc(last.err)}`;
+      else if(last.hasUpdate)line+=` · 发现新版本 ${esc(last.latest)}`;
+      else line+=` · 已是最新版本`;
+      $('#upAutoState').innerHTML=line;
+      if(last.hasUpdate){
+        $('#upAutoResult').innerHTML=`<span style="color:var(--warn-txt)">检测到新版本 ${esc(last.latest)}${UPDATE_MODE&&UPDATE_MODE.docker?'，请在宿主机执行上方升级命令':'，可点击上方「下载并安装更新」'}</span>`;
+      }
+    }else if(UPDATE_INFO.lastCheckAt){
+      $('#upAutoState').textContent=`最近检查：${UPDATE_INFO.lastCheckAt}`;
+    }
+    if(UPDATE_MODE.docker){
+      $('#upDockerHint').classList.remove('hidden');
+      // Docker 部署：隐藏「普通安装包」上传卡片，改为镜像包上传卡片。
+      $('#upUploadCard').classList.add('hidden');
+      $('#upDockerUploadCard').classList.remove('hidden');
+    }else{
+      $('#upDockerHint').classList.add('hidden');
+      $('#upUploadCard').classList.remove('hidden');
+      $('#upDockerUploadCard').classList.add('hidden');
+      const allow=UPDATE_INFO.allowUpload!==false;
+      $('#btnPickPkg').disabled=!allow;
+      if(!allow)$('#upFileName').textContent='当前配置禁用了上传更新';
+    }
+  }catch(e){toast('读取更新信息失败：'+e.message,'bad');}
+}
+function updateProgress(box,bar,txt,text,pct){
+  $(box).classList.remove('hidden');
+  $(txt).textContent=text;
+  $(bar).style.width=Math.max(0,Math.min(100,pct||0))+'%';
+}
+$('#btnSaveUpdateSrc').onclick=async()=>{
+  try{
+    await api('/api/config',{method:'PUT',body:{update:{
+      sourceUrl:str('#up_source').trim(),proxy:str('#up_proxy').trim()}}});
+    toast('更新源已保存','ok');
+  }catch(e){toast(e.message,'bad');}
+};
+$('#btnCheckUpdate').onclick=async()=>{
+  const b=$('#btnCheckUpdate');b.disabled=true;b.textContent='检查中...';
+  try{
+    const r=await api('/api/update/check');
+    UPDATE_LATEST=r;
+    $('#upLatest').textContent=r.latest||'-';
+    $('#upLatest').style.color=r.hasUpdate?'var(--warn)':'var(--ok)';
+    $('#upLatestSub').textContent=r.hasUpdate?'有新版本可用':'已是最新版本';
+    if(r.releasedAt||r.notes){
+      $('#upNotes').classList.remove('hidden');
+      $('#upNotes').innerHTML=(r.releasedAt?`更新时间：${esc(r.releasedAt)}<br>`:'')+
+        (r.notes?esc(r.notes):'');
+    }
+    if(r.hasUpdate&&r.docker){
+      if(r.dockerSelf){
+        toast('发现新版本 '+r.latest+'，可在线拉取镜像更新','ok');
+      }else{
+        toast('发现新版本 '+r.latest+'，未挂载 docker.sock，请在宿主机执行 compose 升级命令','ok');
+      }
+      $('#upDockerHint').classList.remove('hidden');
+    }else if(r.hasUpdate&&!r.available){
+      toast('发现新版本 '+r.latest+'，但更新源未提供 '+r.platform+' 的安装包','bad');
+    }else if(r.hasUpdate){
+      toast('发现新版本 '+r.latest+'，可在线更新','ok');
+    }else{
+      toast('当前已是最新版本 '+r.latest,'ok');
+    }
+    $('#btnOnlineUpdate').disabled=!r.canAuto;
+  }catch(e){
+    $('#upLatest').textContent='-';
+    $('#upLatestSub').textContent='检查失败';
+    toast('检查更新失败：'+e.message,'bad');
+  }
+  b.disabled=false;b.textContent='检查更新';
+  loadUpdateInfo();
+};
+$('#btnOnlineUpdate').onclick=async()=>{
+  const latest=UPDATE_LATEST&&UPDATE_LATEST.latest||'新版本';
+  const isDocker=UPDATE_MODE&&UPDATE_MODE.docker;
+  const tip=isDocker
+    ? `确定拉取最新镜像并重启容器吗？\n面板会短暂无法访问，稍后自动恢复。`
+    : `确定下载并安装 ${latest} 吗？\n面板会在替换完成后自动重启，期间短暂无法访问。`;
+  if(!confirm(tip))return;
+  const b=$('#btnOnlineUpdate');b.disabled=true;b.textContent='更新中...';
+  updateProgress('#upProgress','#upProgressBar','#upProgressText',isDocker?'正在拉取最新镜像，请稍候 ...':'正在下载安装包，请稍候 ...',30);
+  try{
+    const r=isDocker
+      ? await api('/api/update/docker-apply',{method:'POST',body:{}})
+      : await api('/api/update/apply',{method:'POST',body:{}});
+    updateProgress('#upProgress','#upProgressBar','#upProgressText',r.message||'更新已开始，正在重启 ...',100);
+    toast('更新已开始，面板将在数秒后重启','ok');
+    waitPanelBack();
+  }catch(e){
+    $('#upProgress').classList.add('hidden');
+    toast('在线更新失败：'+e.message,'bad');
+    b.disabled=false;b.textContent='下载并安装更新';
+  }
+};
+$('#btnPickPkg').onclick=()=>$('#upFile').click();
+$('#upFile').onchange=e=>{
+  PICKED_PKG=e.target.files[0]||null;
+  $('#upFileName').textContent=PICKED_PKG?`${PICKED_PKG.name}（${bytes(PICKED_PKG.size)}）`:'未选择文件';
+  $('#btnUploadUpdate').disabled=!PICKED_PKG;
+};
+$('#btnPickDockerPkg').onclick=()=>$('#upDockerFile').click();
+$('#upDockerFile').onchange=e=>{
+  const f=e.target.files[0]||null;
+  $('#upDockerFileName').textContent=f?`${f.name}（${bytes(f.size)}）`:'未选择文件';
+  $('#btnUploadDockerUpdate').disabled=!f;
+};
+$('#btnUploadDockerUpdate').onclick=async()=>{
+  const f=$('#upDockerFile').files[0];
+  if(!f)return;
+  if(!confirm(`确定用「${f.name}」更新容器镜像吗？\n面板载入镜像后会重启容器，期间短暂无法访问。`))return;
+  const b=$('#btnUploadDockerUpdate');b.disabled=true;b.textContent='上传中...';
+  const fd=new FormData();fd.append('file',f);
+  updateProgress('#upDockerUploadProgress','#upDockerUploadBar','#upDockerUploadText','正在上传镜像包 ...',10);
+  try{
+    const xhr=new XMLHttpRequest();
+    const done=new Promise((res,rej)=>{
+      xhr.upload.onprogress=ev=>{
+        if(ev.lengthComputable)
+          updateProgress('#upDockerUploadProgress','#upDockerUploadBar','#upDockerUploadText',
+            `正在上传 ${bytes(ev.loaded)} / ${bytes(ev.total)}`,ev.loaded/ev.total*90);
+      };
+      xhr.onload=()=>{
+        let d={};
+        try{d=JSON.parse(xhr.responseText);}catch(e){}
+        if(xhr.status>=200&&xhr.status<300&&d.ok!==false)res(d.data!==undefined?d.data:d);
+        else rej(new Error(d.error||('上传失败 '+xhr.status)));
+      };
+      xhr.onerror=()=>rej(new Error('网络错误，上传中断'));
+    });
+    xhr.open('POST','/api/update/docker-upload');
+    xhr.send(fd);
+    const r=await done;
+    updateProgress('#upDockerUploadProgress','#upDockerUploadBar','#upDockerUploadText',r.message||'更新已开始，正在重启 ...',100);
+    toast('镜像已载入，容器即将重启','ok');
+    waitPanelBack();
+  }catch(e){
+    $('#upDockerUploadProgress').classList.add('hidden');
+    toast('镜像更新失败：'+e.message,'bad');
+    b.disabled=false;b.textContent='上传镜像并更新';
+  }
+};
+$('#btnUploadUpdate').onclick=async()=>{
+  if(!PICKED_PKG)return;
+  if(!confirm(`确定用「${PICKED_PKG.name}」替换当前程序吗？\n面板会在替换完成后自动重启。`))return;
+  const b=$('#btnUploadUpdate');b.disabled=true;b.textContent='上传中...';
+  const fd=new FormData();fd.append('file',PICKED_PKG);
+  updateProgress('#upUploadProgress','#upUploadBar','#upUploadText','正在上传安装包 ...',10);
+  try{
+    const xhr=new XMLHttpRequest();
+    const done=new Promise((res,rej)=>{
+      xhr.upload.onprogress=ev=>{
+        if(ev.lengthComputable)
+          updateProgress('#upUploadProgress','#upUploadBar','#upUploadText',
+            `正在上传 ${bytes(ev.loaded)} / ${bytes(ev.total)}`,ev.loaded/ev.total*90);
+      };
+      xhr.onload=()=>{
+        let d={};
+        try{d=JSON.parse(xhr.responseText);}catch(e){}
+        if(xhr.status>=200&&xhr.status<300&&d.ok!==false)res(d.data!==undefined?d.data:d);
+        else rej(new Error(d.error||('上传失败 '+xhr.status)));
+      };
+      xhr.onerror=()=>rej(new Error('网络错误，上传中断'));
+    });
+    xhr.open('POST','/api/update/upload');
+    xhr.send(fd);
+    const r=await done;
+    updateProgress('#upUploadProgress','#upUploadBar','#upUploadText',r.message||'更新已开始，正在重启 ...',100);
+    toast('上传成功，面板即将重启','ok');
+    waitPanelBack();
+  }catch(e){
+    $('#upUploadProgress').classList.add('hidden');
+    toast('上传更新失败：'+e.message,'bad');
+    b.disabled=false;b.textContent='上传并安装';
+  }
+};
+// 面板替换期间会短暂断连，轮询等待新实例就绪后自动刷新。
+async function waitPanelBack(){
+  for(let i=0;i<80;i++){
+    await new Promise(r=>setTimeout(r,1000));
+    try{
+      const res=await fetch('/api/auth/status',{credentials:'same-origin'});
+      if(res.ok){
+        const d=await res.json();
+        if(d&&d.ok!==false){ toast('新版本已就绪，正在刷新页面','ok'); setTimeout(()=>location.reload(),800); return; }
+      }
+    }catch(e){}
+  }
+  toast('等待面板重启超时，请手动刷新页面','bad');
+}
+
+/* ---------------- 账号 ---------------- */
+$('#btnSaveAccount').onclick=async()=>{
+  try{
+    await api('/api/account',{method:'POST',body:{
+      oldPassword:str('#a_old'),newUsername:str('#a_user'),newPassword:str('#a_new')}});
+    toast('账号信息已更新，请重新登录','ok');
+    setTimeout(()=>location.reload(),1200);
+  }catch(e){toast(e.message,'bad');}
+};
+
+/* ---------------- 开机自启动 ---------------- */
+// 仅 Windows 显示开关；状态变化即时写入注册表 Run 键。
+async function loadAutostart(){
+  try{
+    const r=await api('/api/autostart');
+    if(!r.supported){ return; } // 非 Windows 隐藏卡片
+    $('#autostartCard').classList.remove('hidden');
+    fill('#a_autostart', r.enabled);
+  }catch(e){}
+}
+$('#a_autostart').onchange=async()=>{
+  const want=$('#a_autostart').checked;
+  const err=$('#autostartErr');
+  err.classList.add('hidden');
+  try{
+    const r=await api('/api/autostart',{method:'POST',body:{enabled:want}});
+    fill('#a_autostart', r.enabled);
+    toast(want?'已开启开机自启动':'已关闭开机自启动','ok');
+  }catch(e){
+    fill('#a_autostart', !want);
+    err.textContent=e.message;
+    err.classList.remove('hidden');
+  }
+};
+
+/* ---------------- 图表 ---------------- */
+function pushSeries(h){
+  if(!h)return;
+  const rx=h.rxRate||0, tx=h.txRate||0;
+  // 后端采样间隔（默认 5 秒）大于 SSE 推送间隔（2 秒），会连续推重复值；
+  // 去重避免曲线出现「阶梯状不动」的观感。
+  const last=SERIES.length?SERIES[SERIES.length-1]:null;
+  if(last && last.rx===rx && last.tx===tx)return;
+  SERIES.push({t:Date.now(),rx,tx});
+  if(SERIES.length>240)SERIES=SERIES.slice(-240);
+  // 刷新当前页的图：dash 用实时速率，traffic 用流量趋势，都画 SERIES。
+  const page=$$('section[data-view]').find(s=>!s.classList.contains('hidden'));
+  if(!page)return;
+  if(page.dataset.view==='dash')drawRate();
+  else if(page.dataset.view==='traffic')drawTraffic();
+}
+function setupCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth||600,h=cv.clientHeight||176;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  return {ctx,w,h};
+}
+function drawSeries(cv,series,colorA,colorB,labelA,labelB){
+  const {ctx,w,h}=setupCanvas(cv);
+  const pad={l:8,r:8,t:12,b:20};
+  const iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  ctx.strokeStyle=cssv('--chart-grid');ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ih*i/4;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();
+  }
+  if(!series.length){
+    ctx.fillStyle=cssv('--chart-label');ctx.font='13px sans-serif';
+    ctx.textAlign='center';ctx.fillText('正在采集数据 ...',w/2,h/2);return;
+  }
+  let max=0;
+  series.forEach(p=>{max=Math.max(max,p.rx,p.tx);});
+  if(max<=0)max=1024;
+  const N=series.length;
+  const px=i=>pad.l+(N<=1?iw/2:iw*i/(N-1));
+  const py=v=>pad.t+ih-(v/max)*ih;
+  const draw=(key,color,fill)=>{
+    ctx.beginPath();
+    series.forEach((p,i)=>{const x=px(i),y=py(p[key]);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+    if(fill){
+      ctx.lineTo(px(N-1),pad.t+ih);ctx.lineTo(px(0),pad.t+ih);ctx.closePath();
+      const g=ctx.createLinearGradient(0,pad.t,0,pad.t+ih);
+      g.addColorStop(0,fill);g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;ctx.fill();
+    }
+  };
+  draw('tx',colorB,cssv('--chart-fill-b'));
+  draw('rx',colorA,cssv('--chart-fill-a'));
+  ctx.font='11px sans-serif';ctx.textAlign='right';
+  ctx.fillStyle=colorA;ctx.fillText(labelA,w-pad.r-58,pad.t+10);
+  ctx.fillStyle=colorB;ctx.fillText(labelB,w-pad.r,pad.t+10);
+  ctx.fillStyle=cssv('--chart-label2');ctx.textAlign='left';
+  ctx.fillText('峰值 '+bytes(max)+'/s',pad.l+2,pad.t+10);
+}
+function drawRate(){drawSeries($('#chartRate'),SERIES,cssv('--chart-a'),cssv('--chart-b'),'下行','上行');}
+function drawTraffic(){drawSeries($('#chartTraffic'),SERIES,cssv('--chart-a'),cssv('--chart-b'),'下行','上行');}
+function redrawActiveChart(){
+  const page=$$('section[data-view]').find(s=>!s.classList.contains('hidden'));
+  if(!page)return;
+  if(page.dataset.view==='dash')drawRate();
+  if(page.dataset.view==='traffic')drawTraffic();
+}
+window.addEventListener('resize',()=>{
+  const page=$$('section[data-view]').find(s=>!s.classList.contains('hidden'));
+  if(!page)return;
+  if(page.dataset.view==='dash')drawRate();
+  if(page.dataset.view==='traffic')drawTraffic();
+});
+
+/* ---------------- 启动 ---------------- */
+boot();
+setInterval(()=>{
+  if($('#app').style.display==='none')return;
+  const page=$$('section[data-view]').find(s=>!s.classList.contains('hidden'));
+  if(!page)return;
+  const v=page.dataset.view;
+  if(v==='dash'||v==='traffic')
+    loadOverview().catch(()=>{});
+  // 实例页也要实时刷新隧道状态：隧道「等待中→运行中」由内核异步推进，
+  // 若不轮询，用户会一直看到旧的「等待中」，必须手动刷新网页。
+  if(v==='instances'){
+    loadTunnels().catch(()=>{});
+    loadOverview().catch(()=>{});
+  }
+},8000);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>

@@ -10,9 +10,10 @@ ExecStart=/usr/local/bin/ycfrp -c /var/lib/ycfrp -p 38080
 Restart=on-failure
 RestartSec=3
 
-# 面板以 root 运行以便绑定低位端口，如仅使用高位端口可改为专用账号。
-User=root
-Group=root
+# 以专用普通用户运行。客户端无需 root；服务端绑定 7000/7500 低位端口时，
+# 需先给主程序加能力：sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/ycfrp
+User=ycfrp
+Group=ycfrp
 
 # 数据目录需要可写，用于保存配置、隧道列表与日志。
 ReadWritePaths=/var/lib/ycfrp

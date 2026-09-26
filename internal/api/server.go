@@ -1194,48 +1194,36 @@ func (s *Server) handleImportTunnels(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Adopt {
-		// 只更新用户所选的客户端实例；未指定则落到默认实例上。
-		targetID := strings.TrimSpace(req.InstanceID)
-		if targetID == "" {
-			targetID = s.defaultClientInstanceID()
-		}
-		if targetID != "" {
-			if err := s.app.UpdateInstance(targetID, func(inst *frp.Instance) {
-				if result.Common.ServerAddr != "" {
-					inst.Client.ServerAddr = result.Common.ServerAddr
-				}
-				if result.Common.ServerPort > 0 {
-					inst.Client.ServerPort = result.Common.ServerPort
-				}
-				if result.Common.Token != "" {
-					inst.Client.Token = result.Common.Token
-				}
-				if result.Common.User != "" {
-					inst.Client.User = result.Common.User
-				}
-				inst.Client.TransportTLS = result.Common.TLS
-				if result.Common.Protocol != "" {
-					inst.Client.TransportProto = result.Common.Protocol
-				}
-				if result.Common.LogLevel != "" {
-					inst.Client.LogLevel = result.Common.LogLevel
-				}
-			}); err != nil {
+	// 导入目标：未显式指定实例时，为这次粘贴的配置新建一个独立的客户端实例，
+	// 让不同来源的 frpc 配置各连各的服务端、互不影响；显式指定实例时维持
+	// 「导入到指定实例」的原有行为。
+	importTarget := strings.TrimSpace(req.InstanceID)
+	createdID := ""
+	if importTarget == "" {
+		if strings.TrimSpace(result.Common.ServerAddr) != "" {
+			inst, err := s.createImportedClientInstance(result.Common)
+			if err != nil {
 				writeErr(w, http.StatusBadRequest, err.Error())
 				return
 			}
+			importTarget = inst.ID
+			createdID = inst.ID
+		} else {
+			importTarget = s.defaultClientInstanceID()
+			if importTarget == "" {
+				writeErr(w, http.StatusBadRequest, "请先在「实例」页创建一个客户端实例，再导入隧道")
+				return
+			}
+			result.Warnings = append(result.Warnings, "配置未包含服务端地址，已导入到默认客户端实例")
 		}
-	}
-
-	// 导入的隧道统一归属到目标客户端实例。
-	importTarget := strings.TrimSpace(req.InstanceID)
-	if importTarget == "" {
-		importTarget = s.defaultClientInstanceID()
-	}
-	if importTarget == "" {
-		writeErr(w, http.StatusBadRequest, "请先在「实例」页创建一个客户端实例，再导入隧道")
-		return
+	} else if req.Adopt {
+		// 显式指定实例时，把粘贴配置里的连接参数采纳进该实例。
+		if err := s.app.UpdateInstance(importTarget, func(inst *frp.Instance) {
+			adoptClientCommon(inst, result.Common)
+		}); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
 	}
 
 	existing := make(map[string]bool)
@@ -1262,19 +1250,101 @@ func (s *Server) handleImportTunnels(w http.ResponseWriter, r *http.Request) {
 		}
 		added++
 	}
-	if err := s.app.ReloadTunnels(); err != nil {
+	// 新建了实例时需要让引擎拉起新实例；仅导入到既有实例时热更新隧道即可。
+	if createdID != "" {
+		if err := s.app.ApplyInstances(); err != nil {
+			writeErr(w, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else if err := s.app.ReloadTunnels(); err != nil {
 		writeErr(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	s.app.Logf(logx.LevelInfo, "隧道", "导入配置完成，新增 %d 条，跳过 %d 条", added, skipped)
 	writeOK(w, map[string]any{
-		"added":    added,
-		"skipped":  skipped,
-		"format":   result.Format,
-		"common":   result.Common,
-		"warnings": result.Warnings,
-		"tunnels":  result.Tunnels,
+		"added":      added,
+		"skipped":    skipped,
+		"format":     result.Format,
+		"common":     result.Common,
+		"warnings":   result.Warnings,
+		"tunnels":    result.Tunnels,
+		"instanceId": importTarget,
+		"createdId":  createdID,
 	})
+}
+
+// createImportedClientInstance 依据粘贴配置里的连接参数新建一个客户端实例。
+func (s *Server) createImportedClientInstance(common frp.ParsedCommon) (frp.Instance, error) {
+	base := strings.TrimSpace(common.ServerAddr)
+	if common.ServerPort > 0 {
+		base = fmt.Sprintf("%s:%d", base, common.ServerPort)
+	}
+	if base == "" {
+		base = "导入的客户端"
+	}
+	name := base
+	for i := 2; ; i++ {
+		if !s.clientInstanceNameTaken(name) {
+			break
+		}
+		name = fmt.Sprintf("%s-%d", base, i)
+	}
+	proto := strings.TrimSpace(common.Protocol)
+	if proto == "" {
+		proto = "tcp"
+	}
+	inst := frp.Instance{
+		ID:   app.NewID("inst"),
+		Name: name,
+		Kind: frp.KindClient,
+		Client: config.FRPCConfig{
+			Enable:         true,
+			ServerAddr:     strings.TrimSpace(common.ServerAddr),
+			ServerPort:     common.ServerPort,
+			Token:          common.Token,
+			User:           common.User,
+			TransportTLS:   common.TLS,
+			TransportProto: proto,
+			LogLevel:       common.LogLevel,
+		},
+	}
+	if inst.Client.ServerPort <= 0 {
+		inst.Client.ServerPort = 7000
+	}
+	return s.app.SaveInstance(inst)
+}
+
+// clientInstanceNameTaken 报告某个名称是否已被客户端实例占用。
+func (s *Server) clientInstanceNameTaken(name string) bool {
+	for _, c := range s.app.ClientInstances() {
+		if strings.EqualFold(strings.TrimSpace(c.Name), name) {
+			return true
+		}
+	}
+	return false
+}
+
+// adoptClientCommon 把粘贴配置解析出的连接参数写入实例的客户端配置。
+func adoptClientCommon(inst *frp.Instance, common frp.ParsedCommon) {
+	if strings.TrimSpace(common.ServerAddr) != "" {
+		inst.Client.ServerAddr = common.ServerAddr
+	}
+	if common.ServerPort > 0 {
+		inst.Client.ServerPort = common.ServerPort
+	}
+	if common.Token != "" {
+		inst.Client.Token = common.Token
+	}
+	if common.User != "" {
+		inst.Client.User = common.User
+	}
+	inst.Client.TransportTLS = common.TLS
+	if common.Protocol != "" {
+		inst.Client.TransportProto = common.Protocol
+	}
+	if common.LogLevel != "" {
+		inst.Client.LogLevel = common.LogLevel
+	}
 }
 
 func (s *Server) handleExportTunnels(w http.ResponseWriter, r *http.Request) {
