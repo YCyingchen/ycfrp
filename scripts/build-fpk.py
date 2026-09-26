@@ -135,7 +135,7 @@ status)
 esac
 """
 
-PRIVILEGE = '{\n    "defaults":\n    {\n        "run-as": "root"\n    }\n}\n'
+PRIVILEGE = '{\n    "defaults":\n    {\n        "run-as": "package"\n    }\n}\n'
 
 
 def main():
