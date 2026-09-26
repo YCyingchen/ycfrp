@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -104,9 +105,9 @@ func (s *Server) handleDockerApply(w http.ResponseWriter, r *http.Request) {
 
 	writeOK(w, map[string]any{
 		"restarting": true,
-		"message":    "镜像已拉取，正在重启容器，稍后自动恢复",
+		"message":    "镜像已拉取，正在用新镜像重建容器，稍后自动恢复",
 	})
-	go s.restartDockerContainer(container, "在线更新")
+	go s.recreateDockerContainer(container, image, "在线更新")
 }
 
 // handleDockerUpload 处理容器部署的「本地更新」：接收一个 docker save 出的
@@ -164,17 +165,22 @@ func (s *Server) handleDockerUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.app.Logf(logx.LevelInfo, "更新", "载入本地镜像包 ...")
-	if err := loadImage(cli, archive); err != nil {
+	loadedRef, err := loadImage(cli, archive)
+	if err != nil {
 		s.app.Logf(logx.LevelError, "更新", "载入镜像失败：%v", err)
 		writeErr(w, http.StatusBadRequest, "载入镜像失败："+err.Error())
 		return
 	}
+	image := loadedRef
+	if image == "" {
+		image = dockerImage + ":" + dockerArchTag()
+	}
 
 	writeOK(w, map[string]any{
 		"restarting": true,
-		"message":    "镜像已载入，正在重启容器，稍后自动恢复",
+		"message":    "镜像已载入，正在用新镜像重建容器，稍后自动恢复",
 	})
-	go s.restartDockerContainer(container, "本地更新")
+	go s.recreateDockerContainer(container, image, "本地更新")
 }
 
 // dockerContainerName 反查自身容器名/ID，供 restart 使用。
@@ -238,39 +244,136 @@ func pullImage(cli *dockerClient, image, tag string) error {
 }
 
 // loadImage 通过 Docker API 载入镜像 tar 包。
-func loadImage(cli *dockerClient, tarPath string) error {
+// loadImage 载入镜像 tar 包，返回解析出的镜像引用（如 ycyingchen/ycfrp:tag）。
+func loadImage(cli *dockerClient, tarPath string) (string, error) {
 	f, err := os.Open(tarPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer f.Close()
 	data, status, err := cli.do(http.MethodPost, "/images/load", f, "application/x-tar")
 	if err != nil {
-		return err
+		return "", err
 	}
 	if status != http.StatusOK {
-		return fmt.Errorf("%s", statusText(status, data))
+		return "", fmt.Errorf("%s", statusText(status, data))
 	}
-	return nil
+	return loadedImageRef(data), nil
 }
 
-// restartDockerContainer 延迟重启面板容器；当前进程随容器退出前主动请求停止，
-// 让数据能及时落盘。
-func (s *Server) restartDockerContainer(container, source string) {
-	time.Sleep(1500 * time.Millisecond)
+// loadedImageRef 从 docker load 的流式响应里取出 "Loaded image: <ref>"。
+func loadedImageRef(data []byte) string {
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		var ev struct {
+			Stream string `json:"stream"`
+		}
+		if json.Unmarshal([]byte(line), &ev) != nil {
+			continue
+		}
+		if i := strings.Index(ev.Stream, "Loaded image: "); i >= 0 {
+			return strings.TrimSpace(strings.TrimPrefix(ev.Stream, "Loaded image: "))
+		}
+	}
+	return ""
+}
+
+// recreateDockerContainer 用新镜像按原配置重建容器并切换运行。
+//
+// restart 无法切换镜像（容器创建时即绑定镜像），因此这里走重建：
+// 先改名旧容器让出名字 → 用原名+新镜像建新容器 → 关停当前进程释放端口
+// 并落盘 → 启动新容器 → 强制删除旧容器（当前进程随之退出）。
+func (s *Server) recreateDockerContainer(container, image, source string) {
+	time.Sleep(1500 * time.Millisecond) // 等 HTTP 响应先发给客户端
 	cli, err := newDockerClient()
 	if err != nil {
 		s.app.Logf(logx.LevelError, "更新", "%s：连接 Docker 失败：%v", source, err)
 		return
 	}
-	_, status, err := cli.do(http.MethodPost, "/containers/"+container+"/restart", nil, "")
-	if err != nil || (status != http.StatusNoContent && status != http.StatusOK) {
-		s.app.Logf(logx.LevelError, "更新", "%s：重启容器失败（%d）：%v", source, status, err)
+	name, config, hostConfig, err := cli.inspectContainer(container)
+	if err != nil {
+		s.app.Logf(logx.LevelError, "更新", "%s：读取容器配置失败：%v", source, err)
 		return
 	}
-	s.app.Logf(logx.LevelInfo, "更新", "%s：容器 %s 已重启", source, container)
-	// 容器重启会终止当前进程；这里再请求优雅停止，确保退出前落盘。
+	if name == "" {
+		name = container
+	}
+
+	// 1) 改名旧容器，让出名字（运行中的容器改名不影响其进程）。
+	tmpName := fmt.Sprintf("%s-old-%d", name, time.Now().UnixNano())
+	if _, status, err := cli.do(http.MethodPost, "/containers/"+container+"/rename?name="+tmpName, nil, ""); err != nil || (status != http.StatusNoContent && status != http.StatusOK) {
+		s.app.Logf(logx.LevelError, "更新", "%s：重命名旧容器失败：%v", source, err)
+		return
+	}
+
+	// 2) 用原名 + 新镜像 + 原配置创建新容器（先不启动）。
+	config["Image"] = image
+	createBody := make(map[string]any, len(config)+1)
+	for k, v := range config {
+		createBody[k] = v
+	}
+	createBody["HostConfig"] = hostConfig
+	payload, _ := json.Marshal(createBody)
+	data, status, err := cli.do(http.MethodPost, "/containers/create?name="+name, bytes.NewReader(payload), "application/json")
+	if err != nil || (status != http.StatusCreated && status != http.StatusOK) {
+		s.app.Logf(logx.LevelError, "更新", "%s：创建新容器失败（%d）：%v", source, status, err)
+		// 恢复旧容器名字，尽量回到可用状态。
+		_, _, _ = cli.do(http.MethodPost, "/containers/"+container+"/rename?name="+name, nil, "")
+		return
+	}
+	var created struct {
+		Id string `json:"Id"`
+	}
+	_ = json.Unmarshal(data, &created)
+	if created.Id == "" {
+		s.app.Logf(logx.LevelError, "更新", "%s：创建新容器响应异常", source)
+		return
+	}
+
+	// 3) 关停当前进程（释放 38080 与 frp 端口）并落盘。
+	s.shutdownForRecreate()
+
+	// 4) 启动新容器。
+	if _, status, err := cli.do(http.MethodPost, "/containers/"+created.Id+"/start", nil, ""); err != nil || (status != http.StatusNoContent && status != http.StatusOK) {
+		s.app.Logf(logx.LevelError, "更新", "%s：启动新容器失败（%d）：%v", source, status, err)
+		return
+	}
+	s.app.Logf(logx.LevelInfo, "更新", "%s：已启动新容器 %s（%s）", source, name, image)
+
+	// 5) 强制删除旧容器；当前进程随容器退出，切换完成。
+	_, _, _ = cli.do(http.MethodDelete, "/containers/"+container+"?force=true", nil, "")
+}
+
+// inspectContainer 返回容器的名字（去斜杠）、Config 与 HostConfig。
+func (c *dockerClient) inspectContainer(id string) (name string, config, hostConfig map[string]any, err error) {
+	data, status, err := c.do(http.MethodGet, "/containers/"+id+"/json", nil, "")
+	if err != nil {
+		return "", nil, nil, err
+	}
+	if status != http.StatusOK {
+		return "", nil, nil, fmt.Errorf("%s", statusText(status, data))
+	}
+	var raw struct {
+		Name       string         `json:"Name"`
+		Config     map[string]any `json:"Config"`
+		HostConfig map[string]any `json:"HostConfig"`
+	}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return "", nil, nil, err
+	}
+	return strings.TrimPrefix(raw.Name, "/"), raw.Config, raw.HostConfig, nil
+}
+
+// shutdownForRecreate 关停面板自身服务，为容器切换释放端口并确保数据落盘。
+func (s *Server) shutdownForRecreate() {
+	if s.http != nil {
+		_ = s.http.Close()
+	}
 	_ = daemonpkg.RequestStop(s.app.DataDir)
+	s.app.Shutdown()
 }
 
 // statusText 从 Docker API 错误响应里取可读的 message。
