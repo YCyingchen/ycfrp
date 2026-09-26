@@ -1,12 +1,12 @@
 # YCFRP 官方镜像：内置 frps / frpc 内核的 FRP 双端管理面板。
 # 构建上下文需包含仓库根目录，构建时先放入对应架构的静态二进制：
-#   docker build -f deploy/Dockerfile -t ycyingchen/ycfrp:s2609.031 .
+#   docker build -f deploy/Dockerfile -t ycyingchen/ycfrp:s2609.032 .
 
 FROM debian:12-slim
 
 LABEL org.opencontainers.image.title="YCFRP" \
       org.opencontainers.image.description="FRP 双端管理面板，内置 frps / frpc 内核" \
-      org.opencontainers.image.version="s2609.031" \
+      org.opencontainers.image.version="s2609.032" \
       org.opencontainers.image.source="https://hub.docker.com/r/ycyingchen/ycfrp"
 
 # 面板与内核依赖的系统证书及时区数据，安装后清空 apt 缓存以压缩体积。
