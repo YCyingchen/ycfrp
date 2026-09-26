@@ -60,8 +60,11 @@ start_process() {
         return 0
     fi
     mkdir -p "${TRIM_PKGVAR}/data" >/dev/null 2>&1 || true
+    # 以专用应用用户（非 root）运行；setcap 让普通用户也能绑 80/443/7000 低位端口
+    setcap 'cap_net_bind_service=+ep' "${TRIM_APPDEST}/ycfrp" 2>/dev/null || true
+    chown -R "$TRIM_USERNAME" "${TRIM_PKGVAR}" 2>/dev/null || true
     log_msg "Starting YCFRP ..."
-    setsid bash -c "${CMD}" >> ${LOG_FILE} 2>&1 &
+    setsid runuser -u "$TRIM_USERNAME" -- sh -c "${CMD}" >> ${LOG_FILE} 2>&1 &
     printf "%s" "$!" > ${PID_FILE}
     log_msg "started pid=$!"
     return 0
@@ -135,7 +138,7 @@ status)
 esac
 """
 
-PRIVILEGE = '{\n    "defaults":\n    {\n        "run-as": "root"\n    }\n}\n'
+PRIVILEGE = '{\n    "defaults":\n    {\n        "run-as": "root"\n    },\n    "username": "ycfrp_user",\n    "groupname": "ycfrp_user"\n}\n'
 
 
 def main():

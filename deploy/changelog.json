@@ -1,5 +1,13 @@
 [
   {
+    "version": "s2609.033",
+    "date": "2026-09-26",
+    "kind": "change",
+    "items": [
+      "调整：fpk 也改用非 root 专用用户运行，启动时自动 setcap，支持 frps 绑定 80/443/7000 低位端口；至此 Docker / systemd / fpk 全形态非 root"
+    ]
+  },
+  {
     "version": "s2609.032",
     "date": "2026-09-26",
     "kind": "change",
