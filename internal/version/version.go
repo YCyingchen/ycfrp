@@ -5,7 +5,7 @@ package version
 //   YY  - two digit release year
 //   MM  - two digit release month
 //   NNN - incremental change counter within that month
-const Version = "s2609.033"
+const Version = "s2609.034"
 
 // KernelVersion is the bundled frp kernel version.
 const KernelVersion = "0.71.0"
