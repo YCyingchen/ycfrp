@@ -845,7 +845,7 @@ function instCard(i){
     <div class="spread" style="align-items:flex-start">
       <div style="min-width:0">
         <div class="row" style="gap:8px;flex-wrap:wrap">
-          <b style="font-size:14.5px">${esc(i.name)}</b>
+          <b class="inst-name">${esc(i.name)}</b>
           <span class="tag idle">${esc(i.kindLabel||(isServer?'服务端':'客户端'))}</span>
           ${st}
         </div>
@@ -871,7 +871,7 @@ function instCard(i){
 function instTunnelRow(t){
   const acc=tunnelAccessURL(t);
   const accCell=acc
-    ? `<a href="${esc(acc)}" target="_blank" rel="noopener" class="sm" style="text-decoration:none;padding:4px 10px;font-size:12px;border-radius:8px;background:var(--accent);color:#fff;display:inline-block">访问</a>`
+    ? `<a href="${esc(acc)}" target="_blank" rel="noopener" class="sm" style="text-decoration:none;padding:4px 10px;font-size:12px;border-radius:8px;background:var(--accent);color:#06121c;display:inline-block;font-weight:600">访问</a>`
     : '<span class="tag idle">—</span>';
   const ops=t.external
     ? `<td colspan="2"><span class="tag idle">只读</span></td>`
