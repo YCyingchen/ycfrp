@@ -6,7 +6,7 @@ FROM debian:12-slim
 
 LABEL org.opencontainers.image.title="YCFRP" \
       org.opencontainers.image.description="FRP 双端管理面板，内置 frps / frpc 内核" \
-      org.opencontainers.image.version="s2609.034" \
+      org.opencontainers.image.version="s2609.035" \
       org.opencontainers.image.source="https://hub.docker.com/r/ycyingchen/ycfrp"
 
 # 面板与内核依赖的系统证书及时区数据，安装后清空 apt 缓存以压缩体积。

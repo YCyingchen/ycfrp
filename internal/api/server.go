@@ -113,6 +113,10 @@ func (s *Server) routes(mux *http.ServeMux) {
 	// Static panel assets.
 	mux.HandleFunc("/", s.handleIndex)
 	mux.HandleFunc("/favicon.ico", s.handleFavicon)
+	// 样式与脚本拆成独立文件，仍然从编译期嵌入的资源里读取；
+	// 不使用长缓存，保证面板升级后浏览器立刻拿到新界面。
+	mux.HandleFunc("/app.css", s.handleEmbedded("app.css"))
+	mux.HandleFunc("/app.js", s.handleEmbedded("app.js"))
 
 	// Public endpoints.
 	mux.HandleFunc("/api/auth/login", s.handleLogin)
@@ -1802,6 +1806,20 @@ func (s *Server) handleFavicon(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.Header().Set("Cache-Control", "public, max-age=86400")
 	_, _ = w.Write(data)
+}
+
+// handleEmbedded 返回嵌入资源中的单个静态文件（样式、脚本等）。
+func (s *Server) handleEmbedded(name string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		data, ctype, err := s.ServeStatic(name)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", ctype)
+		w.Header().Set("Cache-Control", "no-cache")
+		_, _ = w.Write(data)
+	}
 }
 
 // ServeStatic exposes an additional file from the embedded asset bundle.
