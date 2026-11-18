@@ -398,6 +398,7 @@ tbody tr:hover{background:var(--row-hover)}
   .page-head p{display:none}
   .live-badge{display:none}
   .drag-tip{display:none}
+  #dashBoard .drag-handle .hint{display:none}
   .content{padding:14px 14px 22px}
   .page-footer{padding:14px 16px 20px}
   .card{padding:14px;border-radius:14px}
